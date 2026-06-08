@@ -1,0 +1,160 @@
+import { useState, useEffect } from 'react'
+import { useParams, Link } from 'react-router-dom'
+import { useCart } from '../../contexts/CartContext'
+import { useQuote } from '../../contexts/QuoteContext'
+import { Check, ShoppingCart, ArrowLeft, ClipboardList, Minus, Plus } from 'lucide-react'
+import { productsApi } from '../../services/api'
+
+function ProductDetail() {
+  const { id } = useParams()
+  const { addItem } = useCart()
+  const { addItem: addQuote } = useQuote()
+  const [qty, setQty] = useState(1)
+  const [addedQuote, setAddedQuote] = useState(false)
+  const [product, setProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    productsApi.getById(id)
+      .then(setProduct)
+      .catch(console.error)
+      .finally(() => setLoading(false))
+  }, [id])
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+        <p className="text-neutral-400 text-lg">Cargando producto...</p>
+      </div>
+    )
+  }
+
+  if (!product) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center">
+        <h1 className="text-2xl font-bold text-neutral-600">Producto no encontrado</h1>
+        <Link to="/productos" className="text-primary-500 hover:underline mt-4 inline-block">Volver a productos</Link>
+      </div>
+    )
+  }
+
+  const handleAddToCart = () => {
+    addItem({ ...product, id: Number(id) })
+  }
+
+  const handleAddToQuote = () => {
+    addQuote({ ...product, id: Number(id) }, qty)
+    setAddedQuote(true)
+    setTimeout(() => setAddedQuote(false), 2000)
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <nav className="flex mb-8 text-sm text-neutral-400">
+        <Link to="/" className="hover:text-black flex items-center gap-1">
+          <ArrowLeft className="w-3 h-3" /> Inicio
+        </Link>
+        <span className="mx-2">/</span>
+        <Link to="/productos" className="hover:text-black">Productos</Link>
+        <span className="mx-2">/</span>
+        <span className="text-neutral-600">{product.name}</span>
+      </nav>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div className="bg-neutral-100 rounded-2xl h-96 flex items-center justify-center overflow-hidden">
+          <img
+            src={product.image}
+            alt={product.name}
+            className="w-full h-full object-cover"
+          />
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400 mb-2">
+            {product.category}
+          </p>
+          <h1 className="font-heading text-4xl font-bold text-black mb-4 uppercase tracking-wide">
+            {product.name}
+          </h1>
+          <p className="text-sm text-neutral-400 mb-2">SKU: {product.sku}</p>
+          <p className="text-3xl font-bold text-black mb-6">
+            ${product.price.toFixed(2)}
+          </p>
+          <p className="text-neutral-600 mb-6 leading-relaxed">
+            {product.description}
+          </p>
+
+          {product.features.length > 0 && (
+            <div className="mb-6">
+              <h3 className="font-heading text-lg font-bold text-black mb-2 uppercase tracking-wide">Características</h3>
+              <ul className="space-y-1">
+                {product.features.map((feature, i) => (
+                  <li key={i} className="flex items-center gap-2 text-neutral-600">
+                    <Check className="w-4 h-4 text-green-500" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <p className="text-sm text-neutral-400 mb-4">
+            {product.stock > 0 ? `${product.stock} unidades disponibles` : 'Agotado'}
+          </p>
+
+          <div className="flex items-center gap-3 mb-3">
+            <label className="text-sm font-medium text-neutral-600">Cantidad:</label>
+            <div className="flex items-center border border-neutral-200 rounded-lg">
+              <button
+                onClick={() => setQty(Math.max(1, qty - 1))}
+                className="p-2 text-neutral-500 hover:text-black hover:bg-neutral-50 transition-colors"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="w-10 text-center font-semibold">{qty}</span>
+              <button
+                onClick={() => setQty(qty + 1)}
+                className="p-2 text-neutral-500 hover:text-black hover:bg-neutral-50 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          <button
+            onClick={handleAddToCart}
+            disabled={product.stock === 0}
+            className="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:bg-neutral-300 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {product.stock > 0 ? 'Agregar al carrito' : 'Agotado'}
+          </button>
+
+          <button
+            onClick={handleAddToQuote}
+            disabled={product.stock === 0}
+            className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
+              addedQuote
+                ? 'bg-green-500 text-white'
+                : 'border border-accent-500 text-accent-600 hover:bg-accent-500 hover:text-white'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {addedQuote ? (
+              <>
+                <Check className="w-5 h-5" />
+                Agregado a cotización
+              </>
+            ) : (
+              <>
+                <ClipboardList className="w-5 h-5" />
+                Agregar a cotización
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ProductDetail

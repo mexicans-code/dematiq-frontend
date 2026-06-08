@@ -1,0 +1,49 @@
+import { Routes, Route } from 'react-router-dom'
+import PublicLayout from '../components/layout/PublicLayout'
+import AdminLayout from '../components/layout/AdminLayout'
+import ProtectedRoute from './ProtectedRoute'
+import Home from '../pages/public/Home'
+import Products from '../pages/public/Products'
+import ProductDetail from '../pages/public/ProductDetail'
+import Cart from '../pages/public/Cart'
+import Quote from '../pages/public/Quote'
+import Checkout from '../pages/public/Checkout'
+import Login from '../pages/public/Login'
+import Register from '../pages/public/Register'
+import Contact from '../pages/public/Contact'
+import PaymentSuccess from '../pages/public/PaymentSuccess'
+import Dashboard from '../pages/admin/Dashboard'
+import ProductsAdmin from '../pages/admin/ProductsAdmin'
+import Orders from '../pages/admin/Orders'
+import Users from '../pages/admin/Users'
+
+
+function AppRouter() {
+  return (
+    <Routes>
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/productos" element={<Products />} />
+        <Route path="/productos/:id" element={<ProductDetail />} />
+        <Route path="/cotizar" element={<Quote />} />
+        <Route path="/carrito" element={<Cart />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/iniciar-sesion" element={<Login />} />
+        <Route path="/registrarse" element={<Register />} />
+        <Route path="/contacto" element={<Contact />} />
+        <Route path="/pago-exitoso" element={<PaymentSuccess />} />
+      </Route>
+
+      <Route element={<ProtectedRoute />}>
+        <Route element={<AdminLayout />}>
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/admin/productos" element={<ProductsAdmin />} />
+          <Route path="/admin/ordenes" element={<Orders />} />
+          <Route path="/admin/usuarios" element={<Users />} />
+        </Route>
+      </Route>
+    </Routes>
+  )
+}
+
+export default AppRouter

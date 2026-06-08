@@ -1,0 +1,130 @@
+import { useState } from 'react'
+import { useParams, useNavigate } from 'react-router-dom'
+
+function ProductForm() {
+  const { id } = useParams()
+  const navigate = useNavigate()
+  const isEditing = Boolean(id)
+
+  const [form, setForm] = useState({
+    name: isEditing ? 'Producto existente' : '',
+    price: isEditing ? '299.99' : '',
+    category: isEditing ? 'Electrónicos' : '',
+    stock: isEditing ? '15' : '',
+    description: isEditing ? 'Descripción del producto...' : '',
+  })
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    navigate('/admin/productos')
+  }
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value })
+  }
+
+  return (
+    <div className="max-w-2xl">
+      <h1 className="font-heading text-2xl font-bold text-black mb-6 uppercase tracking-wide">
+        {isEditing ? 'Editar producto' : 'Nuevo producto'}
+      </h1>
+
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-neutral-100 p-6 space-y-4">
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
+            Nombre del producto
+          </label>
+          <input
+            type="text"
+            name="name"
+            required
+            value={form.name}
+            onChange={handleChange}
+            className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
+              Precio
+            </label>
+            <input
+              type="number"
+              name="price"
+              required
+              step="0.01"
+              value={form.price}
+              onChange={handleChange}
+              className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-neutral-700 mb-1">
+              Stock
+            </label>
+            <input
+              type="number"
+              name="stock"
+              required
+              value={form.stock}
+              onChange={handleChange}
+              className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
+            Categoría
+          </label>
+          <select
+            name="category"
+            required
+            value={form.category}
+            onChange={handleChange}
+            className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+          >
+            <option value="">Seleccionar categoría</option>
+            <option value="Electrónicos">Electrónicos</option>
+            <option value="Ropa">Ropa</option>
+            <option value="Hogar">Hogar</option>
+            <option value="Deportes">Deportes</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-neutral-700 mb-1">
+            Descripción
+          </label>
+          <textarea
+            name="description"
+            rows={4}
+            value={form.description}
+            onChange={handleChange}
+            className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+          />
+        </div>
+
+        <div className="flex items-center gap-3 pt-2">
+          <button
+            type="submit"
+            className="bg-black text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"
+          >
+            {isEditing ? 'Guardar cambios' : 'Crear producto'}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/productos')}
+            className="px-6 py-2.5 rounded-lg font-semibold text-neutral-600 border border-neutral-200 hover:bg-neutral-50 transition-colors"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+export default ProductForm
