@@ -24,6 +24,22 @@ async function request(endpoint, options = {}) {
   return data;
 }
 
+export async function uploadImage(file) {
+  const url = `${API_URL}/upload`;
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { ...authHeaders() },
+    body: formData,
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Error al subir la imagen');
+  return data.data.url;
+}
+
 function mapProduct(p) {
   return {
     id: p.id,
@@ -40,6 +56,10 @@ function mapProduct(p) {
     specs: p.specs || {},
     features: Array.isArray(p.specs) ? p.specs : [],
     status: p.status || 'active',
+    brand: p.brands?.name || p.brand_name || null,
+    brand_id: p.brand_id || null,
+    brand_logo: p.brands?.logo_url || null,
+    brand_slug: p.brands?.slug || null,
     created_at: p.created_at,
     updated_at: p.updated_at,
   };
@@ -57,6 +77,7 @@ function mapOrder(o) {
     status: o.status,
     notes: o.notes,
     shipping_address_id: o.shipping_address_id,
+    mp_order_id: o.mp_order_id || null,
     created_at: o.created_at,
     updated_at: o.updated_at,
     itemCount: (o.order_items || []).reduce((sum, i) => sum + i.quantity, 0),
@@ -73,14 +94,48 @@ function mapUser(u) {
     role_raw: u.role,
     company_name: u.company_name || '',
     rfc: u.rfc || '',
+    status: u.status || 'active',
     created_at: u.created_at,
   };
 }
 
 export const categoriesApi = {
-  getAll: async () => {
-    const res = await request('/categories');
+  getAll: async (params = {}) => {
+    const query = new URLSearchParams();
+    if (params.parent_id) query.set('parent_id', params.parent_id);
+    const qs = query.toString();
+    const res = await request(`/categories${qs ? `?${qs}` : ''}`);
     return res.data || [];
+  },
+
+  getTree: async () => {
+    const res = await request('/categories/tree');
+    return res.data || [];
+  },
+
+  getById: async (id) => {
+    const res = await request(`/categories/${id}`);
+    return res.data;
+  },
+
+  create: async (data) => {
+    const res = await request('/categories', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return res.data;
+  },
+
+  update: async (id, data) => {
+    const res = await request(`/categories/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    return res.data;
+  },
+
+  delete: async (id) => {
+    await request(`/categories/${id}`, { method: 'DELETE' });
   },
 };
 
@@ -153,6 +208,16 @@ export const ordersApi = {
   },
 };
 
+export const quotationsApi = {
+  send: async (data) => {
+    const res = await request('/quotations', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return res;
+  },
+};
+
 export const usersApi = {
   getAll: async () => {
     const res = await request('/users');
@@ -174,5 +239,54 @@ export const usersApi = {
 
   delete: async (id) => {
     await request(`/users/${id}`, { method: 'DELETE' });
+  },
+};
+
+function mapBrand(b) {
+  return {
+    id: b.id,
+    name: b.name,
+    slug: b.slug,
+    description: b.description || '',
+    logo_url: b.logo_url || '',
+    website_url: b.website_url || '',
+    status: b.status || 'active',
+    created_at: b.created_at,
+    updated_at: b.updated_at,
+  };
+}
+
+export const brandsApi = {
+  getAll: async (params = {}) => {
+    const query = new URLSearchParams();
+    if (params.status) query.set('status', params.status);
+    const qs = query.toString();
+    const res = await request(`/brands${qs ? `?${qs}` : ''}`);
+    return (res.data || []).map(mapBrand);
+  },
+
+  getById: async (id) => {
+    const res = await request(`/brands/${id}`);
+    return mapBrand(res.data);
+  },
+
+  create: async (data) => {
+    const res = await request('/brands', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return mapBrand(res.data);
+  },
+
+  update: async (id, data) => {
+    const res = await request(`/brands/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+    return mapBrand(res.data);
+  },
+
+  delete: async (id) => {
+    await request(`/brands/${id}`, { method: 'DELETE' });
   },
 };

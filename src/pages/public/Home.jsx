@@ -114,25 +114,25 @@ function Home() {
         </div>
       </section>
 
-      <section className="py-20 bg-white border-b border-neutral-100">
+      <section className="py-20 bg-white dark:bg-gray-900 border-b border-neutral-100 dark:border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat) => (
               <div key={stat.label} className="text-center">
-                <p className="text-3xl md:text-4xl font-extrabold text-black">{stat.value}</p>
-                <p className="text-sm text-neutral-500 mt-1 uppercase tracking-wider">{stat.label}</p>
+                <p className="text-3xl md:text-4xl font-extrabold text-black dark:text-white">{stat.value}</p>
+                <p className="text-sm text-neutral-500 dark:text-gray-400 mt-1 uppercase tracking-wider">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Categorías</span>
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-black mt-2 uppercase">Explora por categoría</h2>
-            <p className="text-neutral-500 mt-3 max-w-md mx-auto">Encuentra el componente que necesitas</p>
+            <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-gray-500">Categorías</span>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-black dark:text-white mt-2 uppercase">Explora por categoría</h2>
+            <p className="text-neutral-500 dark:text-gray-400 mt-3 max-w-md mx-auto">Encuentra el componente que necesitas</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {categoryData.slice(0, 6).map((cat) => {
@@ -141,11 +141,11 @@ function Home() {
                 <Link
                   key={cat.name}
                   to="/productos"
-                  className="group relative bg-neutral-50 rounded-2xl p-8 hover:bg-primary-500 hover:text-white transition-all duration-300 text-center"
+                  className="group relative bg-neutral-50 dark:bg-gray-800 rounded-2xl p-8 hover:bg-primary-500 hover:text-white transition-all duration-300 text-center"
                 >
                   <Icon className="w-10 h-10 mx-auto mb-4 group-hover:scale-110 transition-transform duration-300" />
                   <h3 className="font-heading text-lg font-bold mb-1 uppercase tracking-wide">{cat.name}</h3>
-                  <p className="text-sm text-neutral-400 group-hover:text-white/60 transition-colors">{cat.count} productos</p>
+                  <p className="text-sm text-neutral-400 dark:text-gray-500 group-hover:text-white/60 transition-colors">{cat.count} productos</p>
                 </Link>
               )
             })}
@@ -153,14 +153,14 @@ function Home() {
         </div>
       </section>
 
-      <section className="py-24 bg-neutral-50">
+      <section className="py-24 bg-neutral-50 dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between mb-14">
             <div>
-              <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Destacados</span>
-              <h2 className="font-heading text-4xl md:text-5xl font-bold text-black mt-2 uppercase">Productos destacados</h2>
+              <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-gray-500">Destacados</span>
+              <h2 className="font-heading text-4xl md:text-5xl font-bold text-black dark:text-white mt-2 uppercase">Productos destacados</h2>
             </div>
-            <Link to="/productos" className="hidden sm:flex items-center gap-1 text-sm font-medium text-black hover:text-neutral-500 transition-colors">
+            <Link to="/productos" className="hidden sm:flex items-center gap-1 text-sm font-medium text-black dark:text-gray-200 hover:text-neutral-500 dark:hover:text-gray-400 transition-colors">
               Ver todos
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -170,9 +170,9 @@ function Home() {
               <Link
                 key={product.id}
                 to={`/productos/${product.id}`}
-                className="group bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
+                className="group bg-white dark:bg-gray-800 rounded-2xl overflow-hidden hover:shadow-xl dark:hover:shadow-gray-900 transition-all duration-300"
               >
-                <div className="bg-neutral-100 h-56 flex items-center justify-center overflow-hidden">
+                <div className="bg-neutral-100 dark:bg-gray-700 h-56 flex items-center justify-center overflow-hidden">
                   <img
                     src={product.image}
                     alt={product.name}
@@ -180,13 +180,13 @@ function Home() {
                   />
                 </div>
                 <div className="p-5 space-y-2">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-neutral-400 dark:text-gray-500">
                     {product.category}
                   </p>
-                  <h3 className="font-heading text-lg font-bold text-neutral-800 group-hover:text-black transition-colors uppercase tracking-wide">
+                  <h3 className="font-heading text-lg font-bold text-neutral-800 dark:text-gray-200 group-hover:text-black dark:group-hover:text-white transition-colors uppercase tracking-wide">
                     {product.name}
                   </h3>
-                  <p className="text-2xl font-extrabold text-black">
+                  <p className="text-2xl font-extrabold text-black dark:text-white">
                     ${product.price.toFixed(2)}
                   </p>
                 </div>
@@ -194,7 +194,7 @@ function Home() {
             ))}
           </div>
           <div className="mt-10 text-center sm:hidden">
-            <Link to="/productos" className="inline-flex items-center gap-1 text-sm font-medium text-black hover:text-neutral-500 transition-colors">
+            <Link to="/productos" className="inline-flex items-center gap-1 text-sm font-medium text-black dark:text-gray-200 hover:text-neutral-500 dark:hover:text-gray-400 transition-colors">
               Ver todos los productos
               <ArrowRight className="w-4 h-4" />
             </Link>
@@ -202,22 +202,22 @@ function Home() {
         </div>
       </section>
 
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400">Por qué elegirnos</span>
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-black mt-2 uppercase">Ventajas Dematiq</h2>
+            <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-gray-500">Por qué elegirnos</span>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-black dark:text-white mt-2 uppercase">Ventajas Dematiq</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((b) => {
               const Icon = b.icon
               return (
                 <div key={b.title} className="text-center p-6">
-                  <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center mx-auto mb-4">
+                  <div className="w-14 h-14 bg-black dark:bg-gray-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <Icon className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="font-heading text-lg font-bold text-black mb-1 uppercase tracking-wide">{b.title}</h3>
-                  <p className="text-sm text-neutral-500">{b.desc}</p>
+                  <h3 className="font-heading text-lg font-bold text-black dark:text-white mb-1 uppercase tracking-wide">{b.title}</h3>
+                  <p className="text-sm text-neutral-500 dark:text-gray-400">{b.desc}</p>
                 </div>
               )
             })}

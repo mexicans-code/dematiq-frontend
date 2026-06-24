@@ -69,13 +69,28 @@ export function AuthProvider({ children }) {
     }
   }, [])
 
+  const updateProfile = useCallback(async (data) => {
+    try {
+      const token = localStorage.getItem(TOKEN_KEY)
+      if (token) {
+        await fetch(`${API_URL}/auth/profile`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify(data),
+        })
+      }
+    } catch {}
+    setUser((prev) => (prev ? { ...prev, ...data } : prev))
+    return { success: true }
+  }, [])
+
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
     setUser(null)
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, logout }}>
       {children}
     </AuthContext.Provider>
   )

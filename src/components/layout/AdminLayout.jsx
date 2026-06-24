@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import ThemeToggle from '../ui/ThemeToggle'
 import {
   LayoutDashboard,
   Package,
@@ -9,11 +10,15 @@ import {
   LogOut,
   Store,
   Menu,
+  FolderTree,
+  Tag,
 } from 'lucide-react'
 
 const navLinks = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/admin/productos', label: 'Productos', icon: Package },
+  { path: '/admin/categorias', label: 'Categorías', icon: FolderTree },
+  { path: '/admin/marcas', label: 'Marcas', icon: Tag },
   { path: '/admin/ordenes', label: 'Ordenes', icon: ShoppingCart },
   { path: '/admin/usuarios', label: 'Usuarios', icon: Users },
 ]
@@ -98,14 +103,14 @@ function Sidebar({ mobileOpen, onClose }) {
 
   return (
     <>
-      <aside className="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 bg-black z-40">
+      <aside className="hidden md:flex md:flex-col md:w-64 md:fixed md:inset-y-0 bg-black dark:bg-gray-900 z-40">
         {content}
       </aside>
 
       {mobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={onClose} />
-          <aside className="fixed inset-y-0 left-0 w-72 bg-black z-50 shadow-2xl">
+          <div className="fixed inset-0 bg-black/50 dark:bg-black/70" onClick={onClose} />
+          <aside className="fixed inset-y-0 left-0 w-72 bg-black dark:bg-gray-900 z-50 shadow-2xl">
             {content}
           </aside>
         </div>
@@ -118,19 +123,22 @@ function AdminLayout() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-black flex items-center justify-between px-4 z-30">
+    <div className="min-h-screen">
+      <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-black dark:bg-gray-900 flex items-center justify-between px-4 z-30">
         <Link to="/admin/dashboard" className="font-heading text-lg font-bold uppercase tracking-wide text-white">
           Dematiq
         </Link>
-        <button onClick={() => setMobileOpen(true)} className="p-2 text-white">
-          <Menu className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle className="text-white/80 hover:text-white" />
+          <button onClick={() => setMobileOpen(true)} className="p-2 text-white">
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
 
-      <main className="md:pl-64 pt-14 md:pt-0">
+      <main className="md:pl-64 pt-14 md:pt-0 min-h-screen bg-neutral-50 dark:bg-gray-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <Outlet />
         </div>

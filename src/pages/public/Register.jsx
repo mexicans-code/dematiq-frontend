@@ -1,25 +1,22 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import { useToast } from '../../contexts/ToastContext'
 
 import dematiq_register from '../../assets/img/dematiq_register.png'
 
 function Register() {
   const navigate = useNavigate()
+  const toast = useToast()
   const { register } = useAuth()
   const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
-  const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setError('')
 
     if (form.password !== form.confirmPassword) {
-      setError('Las contraseñas no coinciden')
+      toast.error('Las contraseñas no coinciden')
       return
     }
 
@@ -29,7 +26,7 @@ function Register() {
     if (result.success) {
       navigate('/')
     } else {
-      setError(result.error)
+      toast.error(result.error)
     }
   }
   return (
@@ -44,12 +41,6 @@ function Register() {
               Únete a la comunidad Dematiq
             </p>
           </div>
-
-          {error && (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-xl text-sm mb-6 border border-red-100">
-              {error}
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>

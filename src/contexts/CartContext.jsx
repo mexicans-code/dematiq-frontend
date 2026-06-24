@@ -7,7 +7,12 @@ const STORAGE_KEY = 'dematiq_cart'
 function loadCart() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) return JSON.parse(saved)
+    if (saved) {
+      const data = JSON.parse(saved)
+      return {
+        items: Array.isArray(data.items) ? data.items : [],
+      }
+    }
   } catch {}
   return { items: [] }
 }
@@ -15,20 +20,21 @@ function loadCart() {
 const cartReducer = (state, action) => {
   switch (action.type) {
     case 'ADD_ITEM': {
+      const qty = action.payload.quantity || 1
       const existing = state.items.find((item) => item.id === action.payload.id)
       if (existing) {
         return {
           ...state,
           items: state.items.map((item) =>
             item.id === action.payload.id
-              ? { ...item, quantity: item.quantity + 1 }
+              ? { ...item, quantity: item.quantity + qty }
               : item
           ),
         }
       }
       return {
         ...state,
-        items: [...state.items, { ...action.payload, quantity: 1 }],
+        items: [...state.items, { ...action.payload, quantity: qty }],
       }
     }
     case 'REMOVE_ITEM':
@@ -59,17 +65,25 @@ export function CartProvider({ children }) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   }, [state])
 
-  const addItem = useCallback((product) => {
-    dispatch({ type: 'ADD_ITEM', payload: product })
-  }, [])
+  const addItem = useCallback((product, quantity = 1) => {
+    if (product.stock !== undefined) {
+      const inCart = state.items.find(i => i.id === product.id)
+      const currentQty = inCart ? inCart.quantity : 0
+      if (currentQty + quantity > product.stock) return
+    }
+    dispatch({ type: 'ADD_ITEM', payload: { ...product, quantity } })
+  }, [state.items])
 
   const removeItem = useCallback((id) => {
     dispatch({ type: 'REMOVE_ITEM', payload: id })
   }, [])
 
   const updateQuantity = useCallback((id, quantity) => {
+    if (quantity < 1) return
+    const item = state.items.find(i => i.id === id)
+    if (item && item.stock !== undefined && quantity > item.stock) return
     dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } })
-  }, [])
+  }, [state.items])
 
   const clearCart = useCallback(() => {
     dispatch({ type: 'CLEAR_CART' })

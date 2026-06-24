@@ -7,9 +7,22 @@ const STORAGE_KEY = 'dematiq_quote'
 function loadQuote() {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) return JSON.parse(saved)
+    if (saved) {
+      const data = JSON.parse(saved)
+      return {
+        items: Array.isArray(data.items) ? data.items : [],
+        customProducts: Array.isArray(data.customProducts) ? data.customProducts : [],
+      }
+    }
   } catch {}
-  return { items: [] }
+  return { items: [], customProducts: [] }
+}
+
+let nextCustomId = Date.now()
+
+function nextId() {
+  nextCustomId++
+  return nextCustomId
 }
 
 const quoteReducer = (state, action) => {
@@ -45,8 +58,21 @@ const quoteReducer = (state, action) => {
             : item
         ),
       }
+    case 'ADD_CUSTOM_PRODUCT':
+      return {
+        ...state,
+        customProducts: [
+          ...state.customProducts,
+          { ...action.payload, id: nextId() },
+        ],
+      }
+    case 'REMOVE_CUSTOM_PRODUCT':
+      return {
+        ...state,
+        customProducts: state.customProducts.filter((p) => p.id !== action.payload),
+      }
     case 'CLEAR_QUOTE':
-      return { ...state, items: [] }
+      return { ...state, items: [], customProducts: [] }
     default:
       return state
   }
@@ -71,6 +97,14 @@ export function QuoteProvider({ children }) {
     dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } })
   }, [])
 
+  const addCustomProduct = useCallback((product) => {
+    dispatch({ type: 'ADD_CUSTOM_PRODUCT', payload: product })
+  }, [])
+
+  const removeCustomProduct = useCallback((id) => {
+    dispatch({ type: 'REMOVE_CUSTOM_PRODUCT', payload: id })
+  }, [])
+
   const clearQuote = useCallback(() => {
     dispatch({ type: 'CLEAR_QUOTE' })
   }, [])
@@ -81,9 +115,12 @@ export function QuoteProvider({ children }) {
     <QuoteContext.Provider
       value={{
         items: state.items,
+        customProducts: state.customProducts,
         addItem,
         removeItem,
         updateQuantity,
+        addCustomProduct,
+        removeCustomProduct,
         clearQuote,
         totalItems,
       }}

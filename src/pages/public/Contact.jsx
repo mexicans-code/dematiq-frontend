@@ -32,35 +32,35 @@ function Contact() {
         </div>
       </section>
 
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-12">
             <div className="lg:col-span-2">
               {sent ? (
-                <div className="bg-neutral-50 rounded-2xl p-12 text-center">
+                <div className="bg-neutral-50 dark:bg-gray-800 rounded-2xl p-12 text-center">
                   <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                  <h2 className="font-heading text-2xl font-bold text-black mb-2 uppercase tracking-wide">Mensaje enviado</h2>
-                  <p className="text-neutral-500">Nos pondremos en contacto contigo en las próximas 24 horas.</p>
+                  <h2 className="font-heading text-2xl font-bold text-black dark:text-white mb-2 uppercase tracking-wide">Mensaje enviado</h2>
+                  <p className="text-neutral-500 dark:text-gray-400">Nos pondremos en contacto contigo en las próximas 24 horas.</p>
                   <button
                     onClick={() => { setSent(false); setForm({ nombre: '', empresa: '', email: '', telefono: '', mensaje: '' }) }}
-                    className="mt-6 text-sm text-black hover:text-neutral-600 underline"
+                    className="mt-6 text-sm text-black dark:text-white hover:text-neutral-600 dark:hover:text-gray-400 underline"
                   >
                     Enviar otro mensaje
                   </button>
                 </div>
               ) : (
                 <div>
-                  <h2 className="font-heading text-2xl font-bold text-black mb-1 uppercase tracking-wide">Formulario de contacto</h2>
-                  <p className="text-neutral-500 text-sm mb-8">Todos los campos marcados con * son obligatorios</p>
+                  <h2 className="font-heading text-2xl font-bold text-black dark:text-white mb-1 uppercase tracking-wide">Formulario de contacto</h2>
+                  <p className="text-neutral-500 dark:text-gray-400 text-sm mb-8">Todos los campos marcados con * son obligatorios</p>
 
                   <form onSubmit={handleSubmit} className="space-y-5">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                       <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">
+                        <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
                           Contacto <span className="text-red-500">*</span>
                         </label>
                         <div className="relative">
-                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 dark:text-gray-500" />
                           <input
                             type="text"
                             name="nombre"
@@ -68,16 +68,16 @@ function Contact() {
                             value={form.nombre}
                             onChange={handleChange}
                             placeholder="ING. JOSE MORENO"
-                            className="w-full pl-10 pr-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                            className="w-full pl-10 pr-4 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm bg-transparent dark:text-gray-200"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">
+                        <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
                           Empresa <span className="text-red-500">*</span>
                         </label>
                         <div className="relative">
-                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                          <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 dark:text-gray-500" />
                           <input
                             type="text"
                             name="empresa"
@@ -85,16 +85,16 @@ function Contact() {
                             value={form.empresa}
                             onChange={handleChange}
                             placeholder="DEMATIQ AUTOMATIZACION"
-                            className="w-full pl-10 pr-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                            className="w-full pl-10 pr-4 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm bg-transparent dark:text-gray-200"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">
+                        <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
                           Correo <span className="text-red-500">*</span>
                         </label>
                         <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 dark:text-gray-500" />
                           <input
                             type="email"
                             name="email"
@@ -102,16 +102,16 @@ function Contact() {
                             value={form.email}
                             onChange={handleChange}
                             placeholder="ventas@dematiq.com.mx"
-                            className="w-full pl-10 pr-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                            className="w-full pl-10 pr-4 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm bg-transparent dark:text-gray-200"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-neutral-700 mb-1">
+                        <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
                           Teléfono <span className="text-red-500">*</span>
                         </label>
                         <div className="relative">
-                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400 dark:text-gray-500" />
                           <input
                             type="tel"
                             name="telefono"
@@ -119,14 +119,14 @@ function Contact() {
                             value={form.telefono}
                             onChange={handleChange}
                             placeholder="442 721 4891"
-                            className="w-full pl-10 pr-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+                            className="w-full pl-10 pr-4 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm bg-transparent dark:text-gray-200"
                           />
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-neutral-700 mb-1">
+                      <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
                         Mensaje o descripción del proyecto <span className="text-red-500">*</span>
                       </label>
                       <textarea
@@ -136,7 +136,7 @@ function Contact() {
                         value={form.mensaje}
                         onChange={handleChange}
                         placeholder="Describe tu proyecto o las partes que necesitas cotizar..."
-                        className="w-full px-4 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm resize-none"
+                        className="w-full px-4 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm resize-none bg-transparent dark:text-gray-200"
                       />
                     </div>
 
@@ -154,53 +154,53 @@ function Contact() {
 
             <div className="space-y-8">
               <div>
-                <h3 className="font-heading text-lg font-bold text-black mb-4 uppercase tracking-wide">Información de contacto</h3>
+                <h3 className="font-heading text-lg font-bold text-black dark:text-white mb-4 uppercase tracking-wide">Información de contacto</h3>
 
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-black mt-0.5 flex-shrink-0" />
+                    <MapPin className="w-5 h-5 text-black dark:text-white mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-black">Dirección</p>
-                      <p className="text-sm text-neutral-500">Jardín de la Alabanza 2049<br />Jardines del Sol, Querétaro</p>
+                      <p className="text-sm font-medium text-black dark:text-white">Dirección</p>
+                      <p className="text-sm text-neutral-500 dark:text-gray-400">Jardín de la Alabanza 2049<br />Jardines del Sol, Querétaro</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Phone className="w-5 h-5 text-black mt-0.5 flex-shrink-0" />
+                    <Phone className="w-5 h-5 text-black dark:text-white mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-black">Teléfono</p>
-                      <p className="text-sm text-neutral-500">442 721 4891</p>
+                      <p className="text-sm font-medium text-black dark:text-white">Teléfono</p>
+                      <p className="text-sm text-neutral-500 dark:text-gray-400">442 721 4891</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Mail className="w-5 h-5 text-black mt-0.5 flex-shrink-0" />
+                    <Mail className="w-5 h-5 text-black dark:text-white mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-black">Correo</p>
-                      <p className="text-sm text-neutral-500">ventas@dematiq.com.mx</p>
+                      <p className="text-sm font-medium text-black dark:text-white">Correo</p>
+                      <p className="text-sm text-neutral-500 dark:text-gray-400">ventas@dematiq.com.mx</p>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <Building2 className="w-5 h-5 text-black mt-0.5 flex-shrink-0" />
+                    <Building2 className="w-5 h-5 text-black dark:text-white mt-0.5 flex-shrink-0" />
                     <div>
-                      <p className="text-sm font-medium text-black">RFC</p>
-                      <p className="text-sm text-neutral-500">DAU250421V80</p>
+                      <p className="text-sm font-medium text-black dark:text-white">RFC</p>
+                      <p className="text-sm text-neutral-500 dark:text-gray-400">DAU250421V80</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-neutral-50 rounded-2xl p-6">
-                <h3 className="font-heading text-sm font-bold text-black mb-3 uppercase tracking-wide">Horario</h3>
+              <div className="bg-neutral-50 dark:bg-gray-800 rounded-2xl p-6">
+                <h3 className="font-heading text-sm font-bold text-black dark:text-white mb-3 uppercase tracking-wide">Horario</h3>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-neutral-500">Lun - Vie</span>
-                    <span className="font-medium text-black">9:00 - 18:00</span>
+                    <span className="text-neutral-500 dark:text-gray-400">Lun - Vie</span>
+                    <span className="font-medium text-black dark:text-white">9:00 - 18:00</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-neutral-500">Sábado</span>
-                    <span className="font-medium text-black">9:00 - 14:00</span>
+                    <span className="text-neutral-500 dark:text-gray-400">Sábado</span>
+                    <span className="font-medium text-black dark:text-white">9:00 - 14:00</span>
                   </div>
                 </div>
               </div>

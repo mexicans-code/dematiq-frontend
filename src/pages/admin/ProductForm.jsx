@@ -26,13 +26,13 @@ function ProductForm() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="font-heading text-2xl font-bold text-black mb-6 uppercase tracking-wide">
+      <h1 className="font-heading text-2xl font-bold text-black dark:text-white mb-6 uppercase tracking-wide">
         {isEditing ? 'Editar producto' : 'Nuevo producto'}
       </h1>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-neutral-100 p-6 space-y-4">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-xl border border-neutral-100 dark:border-gray-700 p-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
             Nombre del producto
           </label>
           <input
@@ -41,13 +41,13 @@ function ProductForm() {
             required
             value={form.name}
             onChange={handleChange}
-            className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
               Precio
             </label>
             <input
@@ -57,11 +57,11 @@ function ProductForm() {
               step="0.01"
               value={form.price}
               onChange={handleChange}
-              className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1">
+            <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
               Stock
             </label>
             <input
@@ -70,13 +70,13 @@ function ProductForm() {
               required
               value={form.stock}
               onChange={handleChange}
-              className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
             Categoría
           </label>
           <select
@@ -84,7 +84,7 @@ function ProductForm() {
             required
             value={form.category}
             onChange={handleChange}
-            className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
           >
             <option value="">Seleccionar categoría</option>
             <option value="Electrónicos">Electrónicos</option>
@@ -95,7 +95,7 @@ function ProductForm() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-neutral-700 mb-1">
+          <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">
             Descripción
           </label>
           <textarea
@@ -103,21 +103,21 @@ function ProductForm() {
             rows={4}
             value={form.description}
             onChange={handleChange}
-            className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
+            className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
           />
         </div>
 
         <div className="flex items-center gap-3 pt-2">
           <button
             type="submit"
-            className="bg-black text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-neutral-800 transition-colors"
+            className="bg-black dark:bg-gray-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-neutral-800 dark:hover:bg-gray-500 transition-colors"
           >
             {isEditing ? 'Guardar cambios' : 'Crear producto'}
           </button>
           <button
             type="button"
             onClick={() => navigate('/admin/productos')}
-            className="px-6 py-2.5 rounded-lg font-semibold text-neutral-600 border border-neutral-200 hover:bg-neutral-50 transition-colors"
+            className="px-6 py-2.5 rounded-lg font-semibold text-neutral-600 dark:text-gray-300 border border-neutral-200 dark:border-gray-600 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors"
           >
             Cancelar
           </button>

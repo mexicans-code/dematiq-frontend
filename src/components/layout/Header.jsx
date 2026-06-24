@@ -3,11 +3,12 @@ import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
 import { useQuote } from '../../contexts/QuoteContext'
-import { ShoppingCart, Menu, X, ClipboardList } from 'lucide-react'
+import { ShoppingCart, Menu, X, ClipboardList, User } from 'lucide-react'
+import ThemeToggle from '../ui/ThemeToggle'
 
 const navLinks = [
-  { path: '/', label: 'Inicio' },
-  { path: '/productos', label: 'Productos' },
+  { path: '/', label: 'Catálogo' },
+  { path: '/marcas', label: 'Marcas' },
   { path: '/cotizar', label: 'Cotizar' },
   { path: '/contacto', label: 'Contacto' },
 ]
@@ -20,7 +21,7 @@ function Header() {
   const location = useLocation()
 
   const isActive = (path) => {
-    if (path === '/') return location.pathname === '/'
+    if (path === '/') return location.pathname === '/' || location.pathname.startsWith('/productos')
     return location.pathname.startsWith(path)
   }
 
@@ -49,6 +50,8 @@ function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle className="text-white/80 hover:text-white" />
+
             <Link
               to="/carrito"
               className="relative p-2 text-white/80 hover:text-white transition-colors"
@@ -83,7 +86,13 @@ function Header() {
                     <span className="font-heading text-xs font-semibold uppercase tracking-widest">Admin</span>
                   </Link>
                 )}
-                <span className="text-white/70 text-sm font-medium hidden sm:block">{user.name}</span>
+                <Link
+                  to="/perfil"
+                  className="hidden sm:flex items-center gap-1.5 text-white/70 hover:text-white text-sm font-medium transition-colors"
+                >
+                  <User className="w-4 h-4" />
+                  {user.name}
+                </Link>
                 <button
                   onClick={logout}
                   className="bg-white/15 hover:bg-white/25 text-white px-4 py-2 rounded text-sm font-semibold transition-colors"

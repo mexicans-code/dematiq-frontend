@@ -5,7 +5,7 @@ function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-primary-900 text-white mt-auto">
+    <footer className="bg-primary-900 dark:bg-black text-white mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -21,7 +21,6 @@ function Footer() {
           <div>
             <h4 className="font-heading font-semibold mb-3 text-white uppercase tracking-wider text-sm">Enlaces</h4>
             <ul className="space-y-2 text-sm text-primary-200">
-              <li><Link to="/" className="hover:text-accent-300 transition-colors">Inicio</Link></li>
               <li><Link to="/productos" className="hover:text-accent-300 transition-colors">Productos</Link></li>
               <li><Link to="/carrito" className="hover:text-accent-300 transition-colors">Carrito</Link></li>
             </ul>

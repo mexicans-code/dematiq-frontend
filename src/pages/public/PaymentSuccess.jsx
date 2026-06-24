@@ -45,26 +45,26 @@ function PaymentSuccess() {
       <div className="max-w-md mx-auto">
         {status === 'verifying' ? (
           <>
-            <div className="w-20 h-20 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-20 h-20 bg-neutral-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
               <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500" />
             </div>
-            <h1 className="font-heading text-3xl font-bold text-black uppercase tracking-wide mb-2">
+            <h1 className="font-heading text-3xl font-bold text-black dark:text-white uppercase tracking-wide mb-2">
               Verificando pago...
             </h1>
-            <p className="text-neutral-500">Espera un momento mientras confirmamos tu pago.</p>
+            <p className="text-neutral-500 dark:text-gray-400">Espera un momento mientras confirmamos tu pago.</p>
           </>
         ) : status === 'approved' ? (
           <>
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="w-10 h-10 text-green-600" />
+            <div className="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle className="w-10 h-10 text-green-600 dark:text-green-400" />
             </div>
-            <h1 className="font-heading text-3xl font-bold text-black uppercase tracking-wide mb-2">
+            <h1 className="font-heading text-3xl font-bold text-black dark:text-white uppercase tracking-wide mb-2">
               Pago exitoso
             </h1>
-            <p className="text-neutral-500 mb-2">
+            <p className="text-neutral-500 dark:text-gray-400 mb-2">
               Tu orden{orderId ? ` #${orderId}` : ''} ha sido confirmada.
             </p>
-            <p className="text-sm text-neutral-400 mb-8">
+            <p className="text-sm text-neutral-400 dark:text-gray-500 mb-8">
               Recibirás un correo con los detalles de tu compra.
             </p>
             <Link
@@ -76,13 +76,13 @@ function PaymentSuccess() {
           </>
         ) : (
           <>
-            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <XCircle className="w-10 h-10 text-red-600" />
+            <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <XCircle className="w-10 h-10 text-red-600 dark:text-red-400" />
             </div>
-            <h1 className="font-heading text-3xl font-bold text-black uppercase tracking-wide mb-2">
+            <h1 className="font-heading text-3xl font-bold text-black dark:text-white uppercase tracking-wide mb-2">
               Pago pendiente
             </h1>
-            <p className="text-neutral-500 mb-8">
+            <p className="text-neutral-500 dark:text-gray-400 mb-8">
               El pago está en proceso. Te notificaremos cuando se confirme.
             </p>
             <Link
@@ -95,7 +95,7 @@ function PaymentSuccess() {
         )}
 
         {status !== 'verifying' && (
-          <p className="text-xs text-neutral-400 mt-4">
+          <p className="text-xs text-neutral-400 dark:text-gray-500 mt-4">
             Redirigiendo al inicio en {count} segundos...
           </p>
         )}

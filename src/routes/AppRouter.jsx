@@ -11,18 +11,23 @@ import Checkout from '../pages/public/Checkout'
 import Login from '../pages/public/Login'
 import Register from '../pages/public/Register'
 import Contact from '../pages/public/Contact'
+import Profile from '../pages/public/Profile'
 import PaymentSuccess from '../pages/public/PaymentSuccess'
+import Brands from '../pages/public/Brands'
 import Dashboard from '../pages/admin/Dashboard'
 import ProductsAdmin from '../pages/admin/ProductsAdmin'
+import CategoriesAdmin from '../pages/admin/CategoriesAdmin'
 import Orders from '../pages/admin/Orders'
 import Users from '../pages/admin/Users'
+import BrandsAdmin from '../pages/admin/BrandsAdmin'
 
 
 function AppRouter() {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Products />} />
+        <Route path="/inicio" element={<Home />} />
         <Route path="/productos" element={<Products />} />
         <Route path="/productos/:id" element={<ProductDetail />} />
         <Route path="/cotizar" element={<Quote />} />
@@ -31,6 +36,8 @@ function AppRouter() {
         <Route path="/iniciar-sesion" element={<Login />} />
         <Route path="/registrarse" element={<Register />} />
         <Route path="/contacto" element={<Contact />} />
+        <Route path="/marcas" element={<Brands />} />
+        <Route path="/perfil" element={<Profile />} />
         <Route path="/pago-exitoso" element={<PaymentSuccess />} />
       </Route>
 
@@ -38,8 +45,10 @@ function AppRouter() {
         <Route element={<AdminLayout />}>
           <Route path="/admin/dashboard" element={<Dashboard />} />
           <Route path="/admin/productos" element={<ProductsAdmin />} />
+          <Route path="/admin/categorias" element={<CategoriesAdmin />} />
           <Route path="/admin/ordenes" element={<Orders />} />
           <Route path="/admin/usuarios" element={<Users />} />
+          <Route path="/admin/marcas" element={<BrandsAdmin />} />
         </Route>
       </Route>
     </Routes>
