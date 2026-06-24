@@ -38,6 +38,13 @@ function Checkout() {
           quantity: item.quantity,
           price: item.price,
         })),
+        shipping_address: {
+          company: form.company,
+          contact: form.contact,
+          street: form.address,
+          city: form.city,
+          zip: form.zip,
+        },
         notes: form.notes || undefined,
       })
 
@@ -133,7 +140,7 @@ function Checkout() {
             disabled={submitting || !user}
             className="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:bg-neutral-300 disabled:cursor-not-allowed"
           >
-            {submitting ? 'Redirigiendo a Mercado Pago...' : `Pagar $${totalPrice.toFixed(2)} con Mercado Pago`}
+            {submitting ? 'Redirigiendo a Mercado Pago...' : `Pagar $${(totalPrice * 1.16).toFixed(2)} con Mercado Pago`}
           </button>
         </div>
 
@@ -157,12 +164,16 @@ function Checkout() {
               <span>${totalPrice.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-neutral-600 text-sm mb-1">
+              <span>IVA (16%)</span>
+              <span>${(totalPrice * 0.16).toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between text-neutral-600 text-sm mb-1">
               <span>Envío</span>
               <span>Grátis</span>
             </div>
             <div className="flex justify-between font-bold text-neutral-800 text-lg mt-2">
               <span>Total</span>
-              <span>${totalPrice.toFixed(2)}</span>
+              <span>${(totalPrice * 1.16).toFixed(2)}</span>
             </div>
           </div>
         </div>
