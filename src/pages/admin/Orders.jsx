@@ -90,11 +90,27 @@ function OrderDetail({ order, onClose, onStatusChange, onReverify }) {
             </div>
           )}
 
+          {order.shipping_address && (
+            <div>
+              <h3 className="font-heading text-sm font-bold text-black dark:text-white uppercase tracking-wide mb-2">Dirección de envío</h3>
+              <div className="text-sm text-neutral-600 dark:text-gray-300 space-y-0.5 bg-neutral-50 dark:bg-gray-700 rounded-xl p-3">
+                {order.shipping_address.street && <p>{order.shipping_address.street}</p>}
+                {(order.shipping_address.city || order.shipping_address.state) && (
+                  <p>{[order.shipping_address.city, order.shipping_address.state].filter(Boolean).join(', ')}</p>
+                )}
+                <p>{order.shipping_address.zip}{order.shipping_address.country ? `, ${order.shipping_address.country}` : ''}</p>
+                {order.shipping_address.contact_name && <p className="mt-1 text-neutral-400 dark:text-gray-500">Attn: {order.shipping_address.contact_name}</p>}
+                {order.shipping_address.company_name && <p className="text-neutral-400 dark:text-gray-500">{order.shipping_address.company_name}</p>}
+              </div>
+            </div>
+          )}
+
           <div>
             <h3 className="font-heading text-sm font-bold text-black dark:text-white uppercase tracking-wide mb-3">Productos</h3>
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-neutral-100 dark:border-gray-700">
+                  <th className="text-left py-2 font-medium text-neutral-400 dark:text-gray-500">Producto</th>
                   <th className="text-center py-2 font-medium text-neutral-400 dark:text-gray-500">Cantidad</th>
                   <th className="text-right py-2 font-medium text-neutral-400 dark:text-gray-500">Precio unitario</th>
                   <th className="text-right py-2 font-medium text-neutral-400 dark:text-gray-500">Subtotal</th>
@@ -103,6 +119,7 @@ function OrderDetail({ order, onClose, onStatusChange, onReverify }) {
               <tbody>
                 {order.items.map((item) => (
                   <tr key={item.id} className="border-b border-neutral-50 dark:border-gray-700">
+                    <td className="py-2 text-left text-neutral-700 dark:text-gray-200 font-medium">{item.product_name}</td>
                     <td className="py-2 text-center text-neutral-600 dark:text-gray-300">{item.quantity}</td>
                     <td className="py-2 text-right text-neutral-600 dark:text-gray-300">${Number(item.unit_price).toFixed(2)}</td>
                     <td className="py-2 text-right font-medium text-black dark:text-white">${(item.quantity * Number(item.unit_price)).toFixed(2)}</td>
