@@ -8,88 +8,105 @@ import { productsApi, brandsApi } from '../../services/api'
 import CategorySidebar from '../../components/ui/CategorySidebar'
 
 function BrandLogoCarousel({ brands, selectedBrand, onSelectBrand }) {
-  const scrollRef = useRef(null)
+  const containerRef = useRef(null)
   const intervalRef = useRef(null)
+  const [page, setPage] = useState(0)
+  const [isTransitioning, setIsTransitioning] = useState(true)
 
-  const scroll = (dir) => {
-    if (!scrollRef.current) return
-    scrollRef.current.scrollBy({ left: dir * 260, behavior: 'smooth' })
-  }
+  const total = brands.length
+  const CARD_W = 160
+
+  const goTo = (p) => setPage(p)
 
   useEffect(() => {
-    const el = scrollRef.current
-    if (!el || brands.length === 0) return
-
+    if (total === 0) return
     intervalRef.current = setInterval(() => {
-      const maxScroll = el.scrollWidth - el.clientWidth
-      if (el.scrollLeft >= maxScroll - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' })
-      } else {
-        el.scrollBy({ left: 260, behavior: 'smooth' })
-      }
+      setPage(prev => prev + 1)
     }, 3500)
-
     return () => clearInterval(intervalRef.current)
-  }, [brands.length])
+  }, [total])
+
+  useEffect(() => {
+    if (page < total || total === 0) return
+    const t = setTimeout(() => {
+      setIsTransitioning(false)
+      setPage(0)
+      requestAnimationFrame(() => requestAnimationFrame(() => setIsTransitioning(true)))
+    }, 500)
+    return () => clearTimeout(t)
+  }, [page, total])
 
   const pause = () => clearInterval(intervalRef.current)
   const resume = () => {
     clearInterval(intervalRef.current)
-    const el = scrollRef.current
-    if (!el) return
+    if (total === 0) return
     intervalRef.current = setInterval(() => {
-      const maxScroll = el.scrollWidth - el.clientWidth
-      if (el.scrollLeft >= maxScroll - 10) {
-        el.scrollTo({ left: 0, behavior: 'smooth' })
-      } else {
-        el.scrollBy({ left: 260, behavior: 'smooth' })
-      }
+      setPage(prev => prev + 1)
     }, 3500)
   }
 
-  if (!brands || brands.length === 0) return null
+  if (!brands || total === 0) return null
+
+  const offset = -(page * CARD_W)
 
   return (
     <div className="mb-8">
       <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide mb-4">Marcas</h2>
       <div className="relative group" onMouseEnter={pause} onMouseLeave={resume}>
         <button
-          onClick={() => scroll(-1)}
+          onClick={() => setPage(prev => prev <= 0 ? total - 1 : prev - 1)}
           className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-neutral-50 dark:hover:bg-gray-600"
         >
           <ChevronLeft className="w-4 h-4 text-neutral-600 dark:text-gray-300" />
         </button>
-        <div
-          ref={scrollRef}
-          className="flex gap-4 overflow-x-auto pb-2"
-          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-        >
-          {brands.map((brand) => (
-            <button
-              key={brand.id}
-              onClick={() => onSelectBrand && onSelectBrand(selectedBrand?.id === brand.id ? null : brand)}
-              className={`flex-shrink-0 w-36 h-24 flex flex-col items-center justify-center gap-2 rounded-xl border transition-all duration-200 ${
-                selectedBrand?.id === brand.id
-                  ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 shadow-sm'
-                  : 'border-neutral-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-neutral-300 dark:hover:border-gray-500 hover:shadow-sm'
-              }`}
-            >
-              {brand.logo_url ? (
-                <img src={brand.logo_url} alt={brand.name} className="h-10 max-w-[80%] object-contain" />
-              ) : (
-                <span className="text-lg font-bold text-neutral-300 dark:text-gray-600">{brand.name.charAt(0)}</span>
-              )}
-              <span className="text-[11px] font-medium text-neutral-500 dark:text-gray-400 truncate max-w-[90%]">{brand.name}</span>
-            </button>
-          ))}
+        <div ref={containerRef} className="overflow-hidden">
+          <div
+            className="flex gap-4"
+            style={{
+              transform: `translateX(${offset}px)`,
+              transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none',
+            }}
+          >
+            {brands.concat(brands).map((brand, i) => (
+              <button
+                key={`${brand.id}-${i}`}
+                onClick={() => onSelectBrand && onSelectBrand(selectedBrand?.id === brand.id ? null : brand)}
+                className={`flex-shrink-0 w-36 h-24 flex flex-col items-center justify-center gap-2 rounded-xl border transition-all duration-200 ${
+                  selectedBrand?.id === brand.id
+                    ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20 shadow-sm'
+                    : 'border-neutral-200 dark:border-gray-600 bg-white dark:bg-gray-800 hover:border-neutral-300 dark:hover:border-gray-500 hover:shadow-sm'
+                }`}
+              >
+                {brand.logo_url ? (
+                  <img src={brand.logo_url} alt={brand.name} className="h-10 max-w-[80%] object-contain" />
+                ) : (
+                  <span className="text-lg font-bold text-neutral-300 dark:text-gray-600">{brand.name.charAt(0)}</span>
+                )}
+                <span className="text-[11px] font-medium text-neutral-500 dark:text-gray-400 truncate max-w-[90%]">{brand.name}</span>
+              </button>
+            ))}
+          </div>
         </div>
         <button
-          onClick={() => scroll(1)}
+          onClick={() => goTo(page + 1)}
           className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-neutral-50 dark:hover:bg-gray-600"
         >
           <ChevronRight className="w-4 h-4 text-neutral-600 dark:text-gray-300" />
         </button>
       </div>
+      {total > 1 && (
+        <div className="flex justify-center gap-1.5 mt-3">
+          {Array.from({ length: total }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => goTo(i)}
+              className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
+                i === page % total ? 'bg-black dark:bg-white w-4' : 'bg-neutral-300 dark:bg-gray-600'
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
