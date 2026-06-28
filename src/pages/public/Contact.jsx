@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { Mail, Phone, MapPin, Building2, User, Send, CheckCircle } from 'lucide-react'
+import { quotationsApi } from '../../services/api'
 
 function Contact() {
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
+  const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState({
     nombre: '',
     empresa: '',
@@ -15,9 +18,18 @@ function Contact() {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSent(true)
+    setError('')
+    setSubmitting(true)
+    try {
+      await quotationsApi.sendContact(form)
+      setSent(true)
+    } catch (err) {
+      setError(err.message || 'Error al enviar el mensaje. Intenta de nuevo.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -140,12 +152,16 @@ function Contact() {
                       />
                     </div>
 
+                    {error && (
+                      <p className="text-red-500 text-sm">{error}</p>
+                    )}
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-2 bg-primary-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors"
+                      disabled={submitting}
+                      className="inline-flex items-center gap-2 bg-primary-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:opacity-50"
                     >
                       <Send className="w-4 h-4" />
-                      Enviar mensaje
+                      {submitting ? 'Enviando...' : 'Enviar mensaje'}
                     </button>
                   </form>
                 </div>

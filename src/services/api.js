@@ -217,6 +217,13 @@ export const quotationsApi = {
     });
     return res;
   },
+  sendContact: async (data) => {
+    const res = await request('/quotations/contact', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    return res;
+  },
 };
 
 export const usersApi = {
