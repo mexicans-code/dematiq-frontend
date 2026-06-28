@@ -84,13 +84,30 @@ export function AuthProvider({ children }) {
     return { success: true }
   }, [])
 
+  const changePassword = useCallback(async (current, newPass) => {
+    try {
+      const token = localStorage.getItem(TOKEN_KEY)
+      if (!token) return { success: false, error: 'No autenticado' }
+      const res = await fetch(`${API_URL}/auth/password`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ current, newPass }),
+      })
+      const data = await res.json()
+      if (!res.ok) return { success: false, error: data.error || 'Error al cambiar contraseña' }
+      return { success: true }
+    } catch {
+      return { success: false, error: 'Error de conexión con el servidor' }
+    }
+  }, [])
+
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
     setUser(null)
   }, [])
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, updateProfile, changePassword, logout }}>
       {children}
     </AuthContext.Provider>
   )

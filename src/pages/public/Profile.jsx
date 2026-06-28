@@ -6,7 +6,7 @@ import { User, Save, Loader2 } from 'lucide-react'
 
 function Profile() {
   const toast = useToast()
-  const { user, loading: authLoading, updateProfile } = useAuth()
+  const { user, loading: authLoading, updateProfile, changePassword } = useAuth()
   const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '' })
   const [passwordForm, setPasswordForm] = useState({ current: '', newPass: '', confirm: '' })
   const [saving, setSaving] = useState(false)
@@ -35,7 +35,7 @@ function Profile() {
     }
   }
 
-  const handlePasswordSubmit = (e) => {
+  const handlePasswordSubmit = async (e) => {
     e.preventDefault()
 
     if (passwordForm.newPass !== passwordForm.confirm) {
@@ -47,9 +47,15 @@ function Profile() {
       return
     }
 
-    updateProfile({ password: passwordForm.newPass })
-    setPasswordForm({ current: '', newPass: '', confirm: '' })
-    toast.success('Contraseña actualizada exitosamente')
+    setSaving(true)
+    const result = await changePassword(passwordForm.current, passwordForm.newPass)
+    setSaving(false)
+    if (result.success) {
+      setPasswordForm({ current: '', newPass: '', confirm: '' })
+      toast.success('Contraseña actualizada exitosamente')
+    } else {
+      toast.error(result.error || 'Error al cambiar contraseña')
+    }
   }
 
   return (
