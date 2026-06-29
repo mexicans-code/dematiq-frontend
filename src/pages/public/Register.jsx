@@ -117,6 +117,7 @@ function Register() {
             src={dematiq_register}
             alt="Dematiq"
             className="absolute inset-0 w-full h-full object-cover"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary-500/70 via-primary-500/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8">

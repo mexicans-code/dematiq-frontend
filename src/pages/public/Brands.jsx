@@ -57,6 +57,7 @@ function Brands() {
                     src={brand.logo_url}
                     alt={brand.name}
                     className="max-w-full max-h-full object-contain"
+                    loading="lazy"
                   />
                 ) : (
                   <span className="text-xl font-bold text-neutral-300 dark:text-gray-600">{brand.name}</span>
