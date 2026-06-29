@@ -72,16 +72,19 @@ export function AuthProvider({ children }) {
   const updateProfile = useCallback(async (data) => {
     try {
       const token = localStorage.getItem(TOKEN_KEY)
-      if (token) {
-        await fetch(`${API_URL}/auth/profile`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify(data),
-        })
-      }
-    } catch {}
-    setUser((prev) => (prev ? { ...prev, ...data } : prev))
-    return { success: true }
+      if (!token) return { success: false, error: 'No autenticado' }
+      const res = await fetch(`${API_URL}/auth/profile`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(data),
+      })
+      const json = await res.json()
+      if (!res.ok) return { success: false, error: json.error || 'Error al actualizar perfil' }
+      setUser((prev) => (prev ? { ...prev, ...json.data } : prev))
+      return { success: true }
+    } catch {
+      return { success: false, error: 'Error de conexión con el servidor' }
+    }
   }, [])
 
   const changePassword = useCallback(async (current, newPass) => {
