@@ -182,9 +182,17 @@ export const ordersApi = {
     const query = new URLSearchParams();
     if (params.status) query.set('status', params.status);
     if (params.user_id) query.set('user_id', params.user_id);
+    if (params.page) query.set('page', params.page);
+    if (params.limit) query.set('limit', params.limit);
     const qs = query.toString();
     const res = await request(`/orders${qs ? `?${qs}` : ''}`);
-    return (res.data || []).map(mapOrder);
+    if (Array.isArray(res.data)) {
+      return { orders: (res.data || []).map(mapOrder), pagination: null };
+    }
+    return {
+      orders: (res.data?.orders || []).map(mapOrder),
+      pagination: res.data?.pagination || null,
+    };
   },
 
   getById: async (id) => {

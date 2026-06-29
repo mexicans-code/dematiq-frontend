@@ -174,16 +174,23 @@ function Orders() {
   const [filter, setFilter] = useState('Todas')
   const [detail, setDetail] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const [pagination, setPagination] = useState(null)
+
+  useEffect(() => { load() }, [filter, page])
 
   const load = () => {
     setLoading(true)
-    ordersApi.getAll()
-      .then(setOrders)
+    const params = { page, limit: 20 }
+    if (filter !== 'Todas') params.status = filter
+    ordersApi.getAll(params)
+      .then((res) => {
+        setOrders(res.orders)
+        setPagination(res.pagination)
+      })
       .catch(console.error)
       .finally(() => setLoading(false))
   }
-
-  useEffect(() => { load() }, [])
 
   const handleStatusChange = async (id, status) => {
     try {
@@ -209,27 +216,23 @@ function Orders() {
     }
   }
 
-  const filtered = filter === 'Todas'
-    ? orders
-    : orders.filter((o) => o.status === filter)
-
   return (
     <div>
       <h1 className="font-heading text-2xl font-bold text-black dark:text-white mb-6 uppercase tracking-wide">Ordenes</h1>
 
       <div className="flex gap-2 mb-6 flex-wrap">
         {filterStatuses.map((s) => (
-          <button
-            key={s}
-            onClick={() => setFilter(s)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              filter === s
-                ? 'bg-black dark:bg-gray-600 text-white'
-                : 'bg-white dark:bg-gray-800 text-neutral-600 dark:text-gray-300 border border-neutral-200 dark:border-gray-600 hover:border-black dark:hover:border-white'
-            }`}
-          >
-            {s === 'Todas' ? 'Todas' : statusLabels[s] || s}
-          </button>
+              <button
+                key={s}
+                onClick={() => { setFilter(s); setPage(1) }}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  filter === s
+                    ? 'bg-black dark:bg-gray-600 text-white'
+                    : 'bg-white dark:bg-gray-800 text-neutral-600 dark:text-gray-300 border border-neutral-200 dark:border-gray-600 hover:border-black dark:hover:border-white'
+                }`}
+              >
+                {s === 'Todas' ? 'Todas' : statusLabels[s] || s}
+              </button>
         ))}
       </div>
 
@@ -252,11 +255,11 @@ function Orders() {
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-neutral-400 dark:text-gray-500">Cargando...</td>
                 </tr>
-              ) : filtered.length === 0 ? (
+              ) : orders.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-neutral-400 dark:text-gray-500">No hay órdenes</td>
                 </tr>
-              ) : filtered.map((order) => (
+              ) : orders.map((order) => (
                 <tr key={order.id} className="border-b border-neutral-50 dark:border-gray-700 hover:bg-neutral-50 dark:hover:bg-gray-700">
                   <td className="py-3 px-4 font-medium text-black dark:text-white">{order.order_id}</td>
                   <td className="py-3 px-4 text-neutral-600 dark:text-gray-300">{order.customer}</td>
@@ -278,6 +281,30 @@ function Orders() {
             </tbody>
           </table>
         </div>
+
+        {pagination && pagination.pages > 1 && (
+          <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-t border-neutral-100 dark:border-gray-700">
+            <p className="text-sm text-neutral-400 dark:text-gray-500">
+              Página {pagination.page} de {pagination.pages} ({pagination.total} pedidos)
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-neutral-200 dark:border-gray-600 text-neutral-600 dark:text-gray-300 hover:border-black dark:hover:border-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                Anterior
+              </button>
+              <button
+                onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
+                disabled={page >= pagination.pages}
+                className="px-3 py-1.5 text-sm font-medium rounded-lg border border-neutral-200 dark:border-gray-600 text-neutral-600 dark:text-gray-300 hover:border-black dark:hover:border-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              >
+                Siguiente
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {detail && (

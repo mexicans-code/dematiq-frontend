@@ -129,15 +129,22 @@ function Profile() {
   const [saving, setSaving] = useState(false)
   const [tab, setTab] = useState('perfil')
   const [orders, setOrders] = useState([])
+  const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(true)
+  const [page, setPage] = useState(1)
+  const [pagination, setPagination] = useState(null)
   const [selectedOrder, setSelectedOrder] = useState(null)
 
   useEffect(() => {
-    ordersApi.getAll()
-      .then(setOrders)
+    setOrdersLoading(true)
+    ordersApi.getAll({ page, limit: 10 })
+      .then((res) => {
+        setOrders(res.orders)
+        setPagination(res.pagination)
+      })
       .catch(console.error)
       .finally(() => setOrdersLoading(false))
-  }, [])
+  }, [page])
 
   if (authLoading) {
     return (
@@ -389,6 +396,30 @@ function Profile() {
                 </tbody>
               </table>
             </div>
+
+            {pagination && pagination.pages > 1 && (
+              <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-t border-neutral-100 dark:border-gray-700">
+                <p className="text-sm text-neutral-400 dark:text-gray-500">
+                  Página {pagination.page} de {pagination.pages} ({pagination.total} pedidos)
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={page <= 1}
+                    className="px-3 py-1.5 text-sm font-medium rounded-lg border border-neutral-200 dark:border-gray-600 text-neutral-600 dark:text-gray-300 hover:border-black dark:hover:border-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Anterior
+                  </button>
+                  <button
+                    onClick={() => setPage((p) => Math.min(pagination.pages, p + 1))}
+                    disabled={page >= pagination.pages}
+                    className="px-3 py-1.5 text-sm font-medium rounded-lg border border-neutral-200 dark:border-gray-600 text-neutral-600 dark:text-gray-300 hover:border-black dark:hover:border-white disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    Siguiente
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
