@@ -132,6 +132,13 @@ function Profile() {
   const [ordersLoading, setOrdersLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState(null)
 
+  useEffect(() => {
+    ordersApi.getAll()
+      .then(setOrders)
+      .catch(console.error)
+      .finally(() => setOrdersLoading(false))
+  }, [])
+
   if (authLoading) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center">
@@ -143,13 +150,6 @@ function Profile() {
   if (!user) {
     return <Navigate to="/iniciar-sesion" replace />
   }
-
-  useEffect(() => {
-    ordersApi.getAll()
-      .then(setOrders)
-      .catch(console.error)
-      .finally(() => setOrdersLoading(false))
-  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
