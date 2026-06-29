@@ -243,7 +243,7 @@ function Products() {
   const handleAddToCart = (product, e) => {
     e.preventDefault()
     e.stopPropagation()
-    if (!user) { navigate('/login'); return }
+    if (!user) { navigate('/iniciar-sesion'); return }
     addItem(product)
     setRecentlyAdded(product.id)
   }
@@ -251,7 +251,7 @@ function Products() {
   const handleAddToQuote = (product, e) => {
     e.preventDefault()
     e.stopPropagation()
-    if (!user) { navigate('/login'); return }
+    if (!user) { navigate('/iniciar-sesion'); return }
     addQuote(product, 1)
     setRecentlyAddedQuote(product.id)
   }

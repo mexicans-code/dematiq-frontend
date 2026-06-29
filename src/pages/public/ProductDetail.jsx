@@ -42,12 +42,12 @@ function ProductDetail() {
   }
 
   const handleAddToCart = () => {
-    if (!user) { navigate('/login'); return }
+    if (!user) { navigate('/iniciar-sesion'); return }
     addItem({ ...product, id: Number(id) }, qty)
   }
 
   const handleAddToQuote = () => {
-    if (!user) { navigate('/login'); return }
+    if (!user) { navigate('/iniciar-sesion'); return }
     addQuote({ ...product, id: Number(id) }, qty)
     setAddedQuote(true)
     setTimeout(() => setAddedQuote(false), 2000)
