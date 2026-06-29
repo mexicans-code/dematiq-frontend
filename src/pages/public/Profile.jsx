@@ -127,6 +127,7 @@ function Profile() {
   const [form, setForm] = useState({ name: user?.name || '', email: user?.email || '' })
   const [passwordForm, setPasswordForm] = useState({ current: '', newPass: '', confirm: '' })
   const [saving, setSaving] = useState(false)
+  const [tab, setTab] = useState('perfil')
   const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(true)
   const [selectedOrder, setSelectedOrder] = useState(null)
@@ -188,193 +189,208 @@ function Profile() {
   return (
     <div className="min-h-[80vh] py-12 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
+        <div className="flex items-center gap-4 mb-6">
           <div className="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center flex-shrink-0">
             <User className="w-7 h-7 text-white" />
           </div>
           <div>
             <h1 className="font-heading text-3xl font-bold text-black dark:text-white uppercase tracking-wide">
-              Mi perfil
+              Mi cuenta
             </h1>
             <p className="text-neutral-400 dark:text-gray-500 text-sm mt-0.5">
-              Administra tu información personal
+              {tab === 'perfil' ? 'Administra tu información personal' : 'Historial de tus compras'}
             </p>
           </div>
         </div>
 
-        <div className="space-y-6">
+        <div className="flex gap-1 mb-6 border-b border-neutral-100 dark:border-gray-700">
+          <button
+            onClick={() => setTab('perfil')}
+            className={`px-5 py-3 text-sm font-semibold transition-colors border-b-2 -mb-px ${
+              tab === 'perfil'
+                ? 'border-primary-500 text-primary-500'
+                : 'border-transparent text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white'
+            }`}
+          >
+            Mi Perfil
+          </button>
+          <button
+            onClick={() => setTab('pedidos')}
+            className={`px-5 py-3 text-sm font-semibold transition-colors border-b-2 -mb-px ${
+              tab === 'pedidos'
+                ? 'border-primary-500 text-primary-500'
+                : 'border-transparent text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white'
+            }`}
+          >
+            Mis Pedidos
+          </button>
+        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 p-6 sm:p-8">
-            <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide mb-6">
-              Información personal
-            </h2>
+        {tab === 'perfil' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 p-6 sm:p-8">
+              <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide mb-6">
+                Información personal
+              </h2>
 
-            <div className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
-                  Nombre completo
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={form.name}
-                  onChange={(e) => setForm({ ...form, name: e.target.value })}
-                  className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
-                  placeholder="Tu nombre"
-                />
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
+                    Nombre completo
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
+                    placeholder="Tu nombre"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
+                    Correo electrónico
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
+                    placeholder="correo@ejemplo.com"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
-                  Correo electrónico
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
-                  placeholder="correo@ejemplo.com"
-                />
+              <div className="mt-8 pt-6 border-t border-neutral-100 dark:border-gray-700">
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold transition-all disabled:bg-neutral-300 dark:disabled:bg-gray-600 active:scale-[0.98]"
+                >
+                  {saving ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  Guardar cambios
+                </button>
               </div>
-            </div>
+            </form>
 
-            <div className="mt-8 pt-6 border-t border-neutral-100 dark:border-gray-700">
-              <button
-                type="submit"
-                disabled={saving}
-                className="w-full inline-flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-xl font-semibold transition-all disabled:bg-neutral-300 dark:disabled:bg-gray-600 active:scale-[0.98]"
-              >
-                {saving ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
+            <form onSubmit={handlePasswordSubmit} className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 p-6 sm:p-8">
+              <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide mb-6">
+                Cambiar contraseña
+              </h2>
+
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
+                    Contraseña actual
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={passwordForm.current}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, current: e.target.value })}
+                    className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
+                    Nueva contraseña
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={passwordForm.newPass}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, newPass: e.target.value })}
+                    className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
+                    Confirmar nueva contraseña
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={passwordForm.confirm}
+                    onChange={(e) => setPasswordForm({ ...passwordForm, confirm: e.target.value })}
+                    className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
+                    placeholder="••••••••"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-8 pt-6 border-t border-neutral-100 dark:border-gray-700">
+                <button
+                  type="submit"
+                  className="w-full inline-flex items-center justify-center gap-2 bg-neutral-900 dark:bg-gray-600 hover:bg-neutral-800 dark:hover:bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold transition-all active:scale-[0.98]"
+                >
                   <Save className="w-4 h-4" />
-                )}
-                Guardar cambios
-              </button>
-            </div>
-          </form>
-
-          <form onSubmit={handlePasswordSubmit} className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 p-6 sm:p-8">
-            <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide mb-6">
-              Cambiar contraseña
-            </h2>
-
-            <div className="space-y-5">
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
-                  Contraseña actual
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={passwordForm.current}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, current: e.target.value })}
-                  className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
-                  placeholder="••••••••"
-                />
+                  Actualizar contraseña
+                </button>
               </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
-                  Nueva contraseña
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={passwordForm.newPass}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, newPass: e.target.value })}
-                  className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
-                  placeholder="••••••••"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1.5">
-                  Confirmar nueva contraseña
-                </label>
-                <input
-                  type="password"
-                  required
-                  value={passwordForm.confirm}
-                  onChange={(e) => setPasswordForm({ ...passwordForm, confirm: e.target.value })}
-                  className="w-full px-4 py-3 border border-neutral-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all bg-neutral-50 dark:bg-gray-700 dark:text-gray-200"
-                  placeholder="••••••••"
-                />
-              </div>
-            </div>
-
-            <div className="mt-8 pt-6 border-t border-neutral-100 dark:border-gray-700">
-              <button
-                type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 bg-neutral-900 dark:bg-gray-600 hover:bg-neutral-800 dark:hover:bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold transition-all active:scale-[0.98]"
-              >
-                <Save className="w-4 h-4" />
-                Actualizar contraseña
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 overflow-hidden">
-          <div className="p-6 sm:p-8 pb-0">
-            <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide mb-1">
-              Mis pedidos
-            </h2>
-            <p className="text-neutral-400 dark:text-gray-500 text-sm mb-4">
-              Historial de tus compras
-            </p>
+            </form>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-t border-neutral-100 dark:border-gray-700 bg-neutral-50 dark:bg-gray-800">
-                  <th className="text-left py-3 px-4 sm:px-6 font-medium text-neutral-400 dark:text-gray-500">Orden</th>
-                  <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Items</th>
-                  <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Total</th>
-                  <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Fecha</th>
-                  <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Estado</th>
-                  <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Detalle</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ordersLoading ? (
-                  <tr>
-                    <td colSpan={6} className="py-12 text-center text-neutral-400 dark:text-gray-500">Cargando pedidos...</td>
-                  </tr>
-                ) : orders.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="py-12 text-center text-neutral-400 dark:text-gray-500">
-                      <Package className="w-8 h-8 mx-auto mb-2 opacity-40" />
-                      No tienes pedidos aún
-                    </td>
-                  </tr>
-                ) : orders.map((order) => (
-                  <tr key={order.id} className="border-b border-neutral-50 dark:border-gray-700 hover:bg-neutral-50 dark:hover:bg-gray-700">
-                    <td className="py-3 px-4 sm:px-6 font-medium text-black dark:text-white">{order.order_id}</td>
-                    <td className="py-3 px-4 text-neutral-600 dark:text-gray-300">{order.itemCount}</td>
-                    <td className="py-3 px-4 font-medium text-black dark:text-white">${order.total.toFixed(2)}</td>
-                    <td className="py-3 px-4 text-neutral-400 dark:text-gray-500">{new Date(order.created_at).toLocaleDateString('es-MX')}</td>
-                    <td className="py-3 px-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusBgColors[order.status] || 'bg-neutral-100 dark:bg-gray-700'} ${statusColors[order.status] || 'text-neutral-600 dark:text-gray-300'}`}>
-                        {statusLabels[order.status] || order.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <button onClick={() => setSelectedOrder(order)} className="flex items-center gap-1 text-black dark:text-white hover:text-neutral-600 dark:hover:text-gray-400 font-medium text-xs" aria-label="Ver detalle del pedido">
-                        <Eye className="w-3.5 h-3.5" />
-                        Ver
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+        )}
 
-        </div>
+        {tab === 'pedidos' && (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-neutral-100 dark:border-gray-700 bg-neutral-50 dark:bg-gray-800">
+                    <th className="text-left py-3 px-4 sm:px-6 font-medium text-neutral-400 dark:text-gray-500">Orden</th>
+                    <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Items</th>
+                    <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Total</th>
+                    <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Fecha</th>
+                    <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Estado</th>
+                    <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Detalle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ordersLoading ? (
+                    <tr>
+                      <td colSpan={6} className="py-12 text-center text-neutral-400 dark:text-gray-500">Cargando pedidos...</td>
+                    </tr>
+                  ) : orders.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-12 text-center text-neutral-400 dark:text-gray-500">
+                        <Package className="w-8 h-8 mx-auto mb-2 opacity-40" />
+                        No tienes pedidos aún
+                      </td>
+                    </tr>
+                  ) : orders.map((order) => (
+                    <tr key={order.id} className="border-b border-neutral-50 dark:border-gray-700 hover:bg-neutral-50 dark:hover:bg-gray-700">
+                      <td className="py-3 px-4 sm:px-6 font-medium text-black dark:text-white">{order.order_id}</td>
+                      <td className="py-3 px-4 text-neutral-600 dark:text-gray-300">{order.itemCount}</td>
+                      <td className="py-3 px-4 font-medium text-black dark:text-white">${order.total.toFixed(2)}</td>
+                      <td className="py-3 px-4 text-neutral-400 dark:text-gray-500">{new Date(order.created_at).toLocaleDateString('es-MX')}</td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusBgColors[order.status] || 'bg-neutral-100 dark:bg-gray-700'} ${statusColors[order.status] || 'text-neutral-600 dark:text-gray-300'}`}>
+                          {statusLabels[order.status] || order.status}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        <button onClick={() => setSelectedOrder(order)} className="flex items-center gap-1 text-black dark:text-white hover:text-neutral-600 dark:hover:text-gray-400 font-medium text-xs" aria-label="Ver detalle del pedido">
+                          <Eye className="w-3.5 h-3.5" />
+                          Ver
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
       </div>
 
       {selectedOrder && (
