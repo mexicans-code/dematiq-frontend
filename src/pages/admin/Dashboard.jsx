@@ -37,18 +37,19 @@ function Dashboard() {
   useEffect(() => {
     Promise.all([
       productsApi.getAll(),
-      ordersApi.getAll(),
+      ordersApi.getAll({ limit: 100 }),
       usersApi.getAll(),
-    ]).then(([products, orders, users]) => {
-      const totalRevenue = orders.reduce((sum, o) => sum + o.total, 0)
-      const pendingOrders = orders.filter((o) => o.status === 'pending' || o.status === 'processing')
+    ]).then(([products, result, users]) => {
+      const allOrders = Array.isArray(result) ? result : result.orders
+      const totalRevenue = allOrders.reduce((sum, o) => sum + o.total, 0)
+      const pendingOrders = allOrders.filter((o) => o.status === 'pending' || o.status === 'processing')
       setStats({
         totalRevenue,
         totalProducts: products.length,
         totalUsers: users.length,
         pendingOrders: pendingOrders.length,
       })
-      setRecentOrders(orders.slice(0, 5))
+      setRecentOrders(allOrders.slice(0, 5))
     }).catch(console.error)
     .finally(() => setLoading(false))
   }, [])
