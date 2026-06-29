@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X, ChevronDown, RefreshCw } from 'lucide-react'
-import { ordersApi } from '../../services/api'
+import { ordersApi, paymentsApi } from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 const statusLabels = {
   pending: 'Pendiente',
@@ -200,20 +198,11 @@ function Orders() {
   const handleReverify = async (orderId) => {
     try {
       setDetail(null)
-      const res = await fetch(`${API_URL}/payments/reverify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: orderId }),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        toast.error(data.error || 'Error al verificar el pago')
-      } else {
-        const msg = data.data?.status === 'approved'
-          ? 'Pago aprobado — La orden se actualizó a Confirmado'
-          : `Pago verificado: ${data.data?.status || 'Desconocido'}`
-        toast.success(msg)
-      }
+      const data = await paymentsApi.reverify(orderId)
+      const msg = data?.status === 'approved'
+        ? 'Pago aprobado — La orden se actualizó a Confirmado'
+        : `Pago verificado: ${data?.status || 'Desconocido'}`
+      toast.success(msg)
       load()
     } catch (err) {
       toast.error('Error al conectar con el servidor: ' + err.message)

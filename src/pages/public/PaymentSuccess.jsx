@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { CheckCircle, XCircle, ArrowRight } from 'lucide-react'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+import { paymentsApi } from '../../services/api'
 
 function PaymentSuccess() {
   const [searchParams] = useSearchParams()
@@ -15,14 +14,9 @@ function PaymentSuccess() {
 
   useEffect(() => {
     if (paymentId) {
-      fetch(`${API_URL}/payments/verify-payment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payment_id: paymentId, order_id: orderId }),
-      })
-        .then((res) => res.json())
+      paymentsApi.verifyPayment(paymentId, orderId)
         .then((data) => {
-          setStatus(data.data?.status === 'approved' ? 'approved' : 'pending')
+          setStatus(data.status === 'approved' ? 'approved' : 'pending')
         })
         .catch(() => setStatus('error'))
     } else {

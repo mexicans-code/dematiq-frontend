@@ -250,6 +250,32 @@ export const usersApi = {
   },
 };
 
+export const paymentsApi = {
+  createPreference: async (orderId) => {
+    const res = await request('/payments/create-preference', {
+      method: 'POST',
+      body: JSON.stringify({ order_id: orderId }),
+    });
+    return res.data;
+  },
+
+  verifyPayment: async (paymentId, orderId) => {
+    const res = await request('/payments/verify-payment', {
+      method: 'POST',
+      body: JSON.stringify({ payment_id: paymentId, order_id: orderId }),
+    });
+    return res.data;
+  },
+
+  reverify: async (orderId) => {
+    const res = await request('/payments/reverify', {
+      method: 'POST',
+      body: JSON.stringify({ order_id: orderId }),
+    });
+    return res.data;
+  },
+};
+
 function mapBrand(b) {
   return {
     id: b.id,

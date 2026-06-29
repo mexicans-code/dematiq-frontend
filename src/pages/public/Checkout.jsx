@@ -2,10 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
-import { ordersApi } from '../../services/api'
+import { ordersApi, paymentsApi } from '../../services/api'
 import { CreditCard, ShieldCheck, AlertCircle, ExternalLink } from 'lucide-react'
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 function Checkout() {
   const navigate = useNavigate()
@@ -48,19 +46,9 @@ function Checkout() {
         notes: form.notes || undefined,
       })
 
-      const res = await fetch(`${API_URL}/payments/create-preference`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: order.id }),
-      })
-      const data = await res.json()
-
-      if (!res.ok) {
-        throw new Error(data.error || 'Error al crear el pago')
-      }
-
+      const data = await paymentsApi.createPreference(order.id)
       clearCart()
-      window.location.href = data.data.init_point
+      window.location.href = data.init_point
     } catch (err) {
       setError(err.message)
     } finally {
