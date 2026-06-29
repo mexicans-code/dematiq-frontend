@@ -56,6 +56,7 @@ function BrandLogoCarousel({ brands, selectedBrand, onSelectBrand }) {
         <button
           onClick={() => setPage(prev => prev <= 0 ? total - 1 : prev - 1)}
           className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-neutral-50 dark:hover:bg-gray-600"
+          aria-label="Anterior marca"
         >
           <ChevronLeft className="w-4 h-4 text-neutral-600 dark:text-gray-300" />
         </button>
@@ -90,6 +91,7 @@ function BrandLogoCarousel({ brands, selectedBrand, onSelectBrand }) {
         <button
           onClick={() => goTo(page + 1)}
           className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-neutral-50 dark:hover:bg-gray-600"
+          aria-label="Siguiente marca"
         >
           <ChevronRight className="w-4 h-4 text-neutral-600 dark:text-gray-300" />
         </button>
@@ -103,6 +105,7 @@ function BrandLogoCarousel({ brands, selectedBrand, onSelectBrand }) {
               className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                 i === page % total ? 'bg-black dark:bg-white w-4' : 'bg-neutral-300 dark:bg-gray-600'
               }`}
+              aria-label={`Ir a marca ${i + 1}`}
             />
           ))}
         </div>
@@ -128,6 +131,7 @@ function BrandCarousel({ brands, selectedBrand, onSelectBrand }) {
         <button
           onClick={() => scroll(-1)}
           className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-neutral-50 dark:hover:bg-gray-600"
+          aria-label="Desplazar izquierda"
         >
           <ChevronLeft className="w-3.5 h-3.5 text-neutral-600 dark:text-gray-300" />
         </button>
@@ -153,6 +157,7 @@ function BrandCarousel({ brands, selectedBrand, onSelectBrand }) {
         <button
           onClick={() => scroll(1)}
           className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 bg-white dark:bg-gray-700 border border-neutral-200 dark:border-gray-600 rounded-full flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-opacity hover:bg-neutral-50 dark:hover:bg-gray-600"
+          aria-label="Desplazar derecha"
         >
           <ChevronRight className="w-3.5 h-3.5 text-neutral-600 dark:text-gray-300" />
         </button>
@@ -324,7 +329,7 @@ function Products() {
             <div className="fixed inset-y-0 left-0 w-72 bg-white dark:bg-gray-800 shadow-2xl flex flex-col">
               <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-100 dark:border-gray-700 flex-shrink-0">
                 <h2 className="font-heading text-sm font-bold text-black dark:text-white uppercase tracking-wide">Categorías</h2>
-                <button onClick={() => setShowSidebar(false)} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+                <button onClick={() => setShowSidebar(false)} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors" aria-label="Cerrar categorías">
                   <X className="w-5 h-5" />
                 </button>
               </div>

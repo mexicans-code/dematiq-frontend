@@ -179,6 +179,7 @@ function Quote() {
                         onClick={() => item.quantity > 1 && updateQuantity(item.id, item.quantity - 1)}
                         className="p-1.5 text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                         disabled={item.quantity <= 1}
+                        aria-label="Reducir cantidad"
                       >
                         <Minus className="w-4 h-4" />
                       </button>
@@ -187,6 +188,7 @@ function Quote() {
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         className="p-1.5 text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors"
+                        aria-label="Aumentar cantidad"
                       >
                         <Plus className="w-4 h-4" />
                       </button>
@@ -195,6 +197,7 @@ function Quote() {
                       type="button"
                       onClick={() => removeItem(item.id)}
                       className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors"
+                      aria-label="Eliminar producto"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -268,6 +271,7 @@ function Quote() {
                       type="button"
                       onClick={() => setCustomProduct((prev) => ({ ...prev, image: '' }))}
                       className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors"
+                      aria-label="Eliminar imagen"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -275,7 +279,7 @@ function Quote() {
                 </div>
                 {customProduct.image && (
                   <div className="mt-2 w-16 h-16 rounded-lg overflow-hidden border border-neutral-200 dark:border-gray-600">
-                    <img src={customProduct.image} alt="Preview" className="w-full h-full object-cover" />
+                    <img src={customProduct.image} alt="" className="w-full h-full object-cover" />
                   </div>
                 )}
               </div>
@@ -313,6 +317,7 @@ function Quote() {
                         type="button"
                         onClick={() => removeCustomProduct(p.id)}
                         className="p-1.5 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors"
+                        aria-label="Eliminar producto personalizado"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

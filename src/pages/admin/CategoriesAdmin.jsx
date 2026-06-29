@@ -51,7 +51,7 @@ function CategoryModal({ category, parents, onClose, onSave }) {
           <h2 className="font-heading text-xl font-bold text-black dark:text-white uppercase tracking-wide">
             {isEditing ? 'Editar categoría' : 'Nueva categoría'}
           </h2>
-          <button onClick={onClose} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+          <button onClick={onClose} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors" aria-label="Cerrar">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -131,6 +131,8 @@ function CategoryRow({ cat, depth = 0, selectedCategory, onEdit, onDelete }) {
               <button
                 onClick={() => setExpanded(!expanded)}
                 className="p-0.5 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors"
+                aria-label={expanded ? 'Colapsar' : 'Expandir'}
+                aria-expanded={expanded}
               >
                 {expanded ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
               </button>

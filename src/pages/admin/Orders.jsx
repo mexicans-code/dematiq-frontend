@@ -54,7 +54,7 @@ function OrderDetail({ order, onClose, onStatusChange, onReverify }) {
           <h2 className="font-heading text-xl font-bold text-black dark:text-white uppercase tracking-wide">
             Orden {order.order_id}
           </h2>
-          <button onClick={onClose} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+          <button onClick={onClose} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors" aria-label="Cerrar detalle">
             <X className="w-5 h-5" />
           </button>
         </div>

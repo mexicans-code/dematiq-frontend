@@ -79,7 +79,7 @@ function BrandModal({ brand, onClose, onSave }) {
           <h2 className="font-heading text-xl font-bold text-black dark:text-white uppercase tracking-wide">
             {isEditing ? 'Editar marca' : 'Nueva marca'}
           </h2>
-          <button onClick={onClose} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+          <button onClick={onClose} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors" aria-label="Cerrar">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -105,14 +105,14 @@ function BrandModal({ brand, onClose, onSave }) {
               </label>
               {pendingFile && <span className="text-xs text-neutral-400 dark:text-gray-500">(sin guardar)</span>}
               {preview && (
-                <button type="button" onClick={clearImage} className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors">
+                <button type="button" onClick={clearImage} className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors" aria-label="Eliminar imagen">
                   <Trash2 className="w-4 h-4" />
                 </button>
               )}
             </div>
             {preview && (
               <div className="mt-2 w-16 h-16 rounded-lg overflow-hidden border border-neutral-200 dark:border-gray-600">
-                <img src={preview} alt="Preview" className="w-full h-full object-contain" />
+                <img src={preview} alt="" className="w-full h-full object-contain" />
               </div>
             )}
           </div>

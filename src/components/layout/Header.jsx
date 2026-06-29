@@ -55,6 +55,7 @@ function Header() {
             <Link
               to="/carrito"
               className="relative p-2 text-white/80 hover:text-white transition-colors"
+              aria-label="Carrito de compras"
             >
               <ShoppingCart className="w-5 h-5" />
               {totalItems > 0 && (
@@ -67,6 +68,7 @@ function Header() {
             <Link
               to="/cotizar"
               className="relative p-2 text-white/80 hover:text-white transition-colors"
+              aria-label="Cotizaciones"
             >
               <ClipboardList className="w-5 h-5" />
               {quoteItems > 0 && (
@@ -112,6 +114,7 @@ function Header() {
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden p-2 text-white"
+              aria-label={mobileOpen ? 'Cerrar menú' : 'Abrir menú'}
             >
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

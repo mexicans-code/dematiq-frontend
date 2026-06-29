@@ -80,6 +80,7 @@ function Cart() {
                   <button
                     onClick={() => removeItem(item.id)}
                     className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-neutral-300 dark:text-gray-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                    aria-label="Eliminar producto"
                     title="Eliminar"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -91,6 +92,7 @@ function Cart() {
                     <button
                       onClick={() => item.quantity > 1 && updateQuantity(item.id, item.quantity - 1)}
                       className="w-9 h-9 flex items-center justify-center text-neutral-500 dark:text-gray-400 hover:text-primary-500 hover:bg-white dark:hover:bg-gray-600 transition-colors"
+                      aria-label="Reducir cantidad"
                     >
                       <Minus className="w-3.5 h-3.5" />
                     </button>
@@ -103,6 +105,7 @@ function Cart() {
                         if (item.quantity < max) updateQuantity(item.id, item.quantity + 1)
                       }}
                       className="w-9 h-9 flex items-center justify-center text-neutral-500 dark:text-gray-400 hover:text-primary-500 hover:bg-white dark:hover:bg-gray-600 transition-colors"
+                      aria-label="Aumentar cantidad"
                     >
                       <Plus className="w-3.5 h-3.5" />
                     </button>

@@ -123,6 +123,7 @@ function ProductDetail() {
               <button
                 onClick={() => setQty(Math.max(1, qty - 1))}
                 className="p-2 text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Reducir cantidad"
               >
                 <Minus className="w-4 h-4" />
               </button>
@@ -130,6 +131,7 @@ function ProductDetail() {
               <button
                 onClick={() => setQty(Math.min(product.stock, qty + 1))}
                 className="p-2 text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-white hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors"
+                aria-label="Aumentar cantidad"
               >
                 <Plus className="w-4 h-4" />
               </button>

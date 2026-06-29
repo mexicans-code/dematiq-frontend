@@ -117,6 +117,8 @@ function CategorySidebar({ selectedCategory, onSelectCategory, brandsByCategory 
                     {hasSubcategories && (
                       <button
                         onClick={() => toggleExpand(expandKey)}
+                        aria-label={isExpanded ? 'Colapsar subcategorías' : 'Expandir subcategorías'}
+                        aria-expanded={isExpanded}
                         className={`flex-shrink-0 p-2 rounded-lg transition-colors ${
                           isActive || hasSubcategorySelected
                             ? 'bg-primary-500 text-white hover:bg-primary-600'

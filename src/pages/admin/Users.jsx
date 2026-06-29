@@ -37,7 +37,7 @@ function UserModal({ user, onClose, onSave }) {
       <div className="relative bg-white dark:bg-gray-800 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 shadow-2xl">
         <div className="flex items-center justify-between mb-6">
           <h2 className="font-heading text-xl font-bold text-black dark:text-white uppercase tracking-wide">Editar usuario</h2>
-          <button onClick={onClose} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+          <button onClick={onClose} className="p-1 text-neutral-400 dark:text-gray-500 hover:text-black dark:hover:text-white transition-colors" aria-label="Cerrar">
             <X className="w-5 h-5" />
           </button>
         </div>

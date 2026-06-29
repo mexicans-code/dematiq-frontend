@@ -48,6 +48,7 @@ function ToastContainer() {
             <button
               onClick={() => removeToast(toast.id)}
               className={`flex-shrink-0 ${style.textColor} hover:opacity-70 transition-opacity`}
+              aria-label="Cerrar notificación"
             >
               <X className="w-4 h-4" />
             </button>

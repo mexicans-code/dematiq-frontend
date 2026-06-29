@@ -8,6 +8,7 @@ function ThemeToggle({ className = '' }) {
     <button
       onClick={toggleTheme}
       className={`p-2 rounded-lg transition-colors ${className}`}
+      aria-label={theme === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'}
       title={theme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
     >
       {theme === 'dark' ? (
