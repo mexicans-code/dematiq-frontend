@@ -129,7 +129,6 @@ function Profile() {
   const [saving, setSaving] = useState(false)
   const [tab, setTab] = useState('perfil')
   const [orders, setOrders] = useState([])
-  const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState(null)
