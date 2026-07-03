@@ -106,7 +106,9 @@ export function AuthProvider({ children }) {
 
   const logout = useCallback(() => {
     localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem('dematiq_cart')
     setUser(null)
+    window.dispatchEvent(new CustomEvent('auth:logout'))
   }, [])
 
   return (
