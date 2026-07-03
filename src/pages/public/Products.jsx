@@ -203,7 +203,7 @@ function Products() {
 
   useEffect(() => {
     Promise.all([
-      productsApi.getAll(),
+      productsApi.getAll({ status: 'active' }),
       brandsApi.getAll({ status: 'active' }),
     ]).then(([productsData, brandsData]) => {
       setProducts(productsData)

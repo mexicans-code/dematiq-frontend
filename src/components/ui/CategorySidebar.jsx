@@ -9,7 +9,7 @@ function CategorySidebar({ selectedCategory, onSelectCategory, brandsByCategory 
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    categoriesApi.getTree()
+    categoriesApi.getTree({ status: 'active' })
       .then(setCategories)
       .catch(console.error)
       .finally(() => setLoading(false))
