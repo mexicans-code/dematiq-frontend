@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
       }
       localStorage.setItem(TOKEN_KEY, data.data.token)
       setUser(data.data.user)
-      return { success: true }
+      return { success: true, user: data.data.user }
     } catch {
       return { success: false, error: 'Error de conexión con el servidor' }
     }

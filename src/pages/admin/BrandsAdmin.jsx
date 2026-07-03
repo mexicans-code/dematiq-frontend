@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Plus, X, Search, ExternalLink, Upload as UploadIcon, Trash2 } from 'lucide-react'
+import { Plus, X, Search, ExternalLink, Upload as UploadIcon, Trash2, ToggleLeft, ToggleRight } from 'lucide-react'
 import { brandsApi, uploadImage } from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
 import ConfirmModal from '../../components/ui/ConfirmModal'
@@ -171,23 +171,31 @@ function BrandsAdmin() {
   const closeModal = () => setModal({ open: false, brand: null })
   const handleSave = () => { closeModal(); load() }
 
-  const handleDelete = (brand) => {
+  const handleToggleStatus = (brand) => {
+    const isActive = brand.status === 'active'
     setConfirm({
       brand,
-      title: 'Eliminar marca',
-      message: `¿Estás seguro de eliminar "${brand.name}"?`,
-      confirmLabel: 'Eliminar',
-      type: 'danger',
+      title: isActive ? 'Deshabilitar marca' : 'Activar marca',
+      message: isActive
+        ? `¿Estás seguro de deshabilitar "${brand.name}"?`
+        : `¿Estás seguro de activar "${brand.name}"?`,
+      confirmLabel: isActive ? 'Deshabilitar' : 'Activar',
+      type: isActive ? 'danger' : 'warning',
     })
   }
 
-  const confirmDelete = async () => {
+  const confirmToggle = async () => {
     if (!confirm) return
     const { brand } = confirm
+    const isActive = brand.status === 'active'
     setConfirm(null)
     try {
-      await brandsApi.delete(brand.id)
-      toast.success('Marca eliminada')
+      if (isActive) {
+        await brandsApi.delete(brand.id)
+      } else {
+        await brandsApi.update(brand.id, { status: 'active' })
+      }
+      toast.success(isActive ? 'Marca deshabilitada' : 'Marca activada')
       load()
     } catch (err) {
       toast.error(err.message)
@@ -273,7 +281,9 @@ function BrandsAdmin() {
                   <td className="py-3 px-4">
                     <div className="flex items-center gap-3">
                       <button onClick={() => openEdit(brand)} className="text-black dark:text-white hover:text-neutral-600 dark:hover:text-gray-400 font-medium text-xs">Editar</button>
-                      <button onClick={() => handleDelete(brand)} className="text-red-500 hover:text-red-600 font-medium text-xs">Eliminar</button>
+                      <button onClick={() => handleToggleStatus(brand)} className={`inline-flex items-center gap-1 font-medium text-xs ${brand.status === 'active' ? 'text-red-500 hover:text-red-600' : 'text-green-600 hover:text-green-700'}`}>
+                        {brand.status === 'active' ? <><ToggleLeft className="w-3.5 h-3.5" /> Deshabilitar</> : <><ToggleRight className="w-3.5 h-3.5" /> Activar</>}
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -298,7 +308,7 @@ function BrandsAdmin() {
           confirmLabel={confirm.confirmLabel}
           cancelLabel="Cancelar"
           type={confirm.type}
-          onConfirm={confirmDelete}
+          onConfirm={confirmToggle}
           onCancel={() => setConfirm(null)}
         />
       )}

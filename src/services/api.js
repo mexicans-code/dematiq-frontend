@@ -46,7 +46,7 @@ function mapProduct(p) {
     name: p.name,
     slug: p.slug,
     sku: p.sku,
-    price: Number(p.price),
+    price: Number(p.price ?? 0),
     category: p.categories?.name || 'General',
     category_id: p.category_id,
     image: p.image_url || `/img/products/${p.slug || p.name.toLowerCase().replace(/\s+/g, '-')}.jpg`,
@@ -72,8 +72,8 @@ function mapOrder(o) {
     user_id: o.user_id,
     customer: o.profiles?.name || 'Desconocido',
     customer_email: o.profiles?.email || '',
-    items: (o.order_items || []).map(i => ({ ...i, product_name: i.product_name || 'Producto' })),
-    total: Number(o.total),
+    items: (o.order_items || []).map(i => ({ ...i, product_name: i.product_name || 'Producto', unit_price: Number(i.unit_price ?? 0) })),
+    total: Number(o.total ?? 0),
     status: o.status,
     notes: o.notes,
     shipping_address_id: o.shipping_address_id,
@@ -104,13 +104,17 @@ export const categoriesApi = {
   getAll: async (params = {}) => {
     const query = new URLSearchParams();
     if (params.parent_id) query.set('parent_id', params.parent_id);
+    if (params.status) query.set('status', params.status);
     const qs = query.toString();
     const res = await request(`/categories${qs ? `?${qs}` : ''}`);
     return res.data || [];
   },
 
-  getTree: async () => {
-    const res = await request('/categories/tree');
+  getTree: async (params = {}) => {
+    const query = new URLSearchParams();
+    if (params.status) query.set('status', params.status);
+    const qs = query.toString();
+    const res = await request(`/categories/tree${qs ? `?${qs}` : ''}`);
     return res.data || [];
   },
 

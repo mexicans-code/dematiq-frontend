@@ -1,8 +1,9 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 function ProtectedRoute() {
   const { user, loading } = useAuth()
+  const location = useLocation()
 
   if (loading) {
     return (
@@ -13,7 +14,8 @@ function ProtectedRoute() {
   }
 
   if (!user) {
-    return <Navigate to="/iniciar-sesion" replace />
+    const redirect = encodeURIComponent(location.pathname + location.search)
+    return <Navigate to={`/iniciar-sesion?redirect=${redirect}`} replace />
   }
 
   if (user.role !== 'admin') {

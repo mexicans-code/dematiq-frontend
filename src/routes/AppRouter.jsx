@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import PublicLayout from '../components/layout/PublicLayout'
 import AdminLayout from '../components/layout/AdminLayout'
 import ProtectedRoute from './ProtectedRoute'
@@ -26,8 +26,8 @@ function AppRouter() {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<Products />} />
-        <Route path="/inicio" element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/inicio" element={<Navigate to="/" replace />} />
         <Route path="/productos" element={<Products />} />
         <Route path="/productos/:id" element={<ProductDetail />} />
         <Route path="/cotizar" element={<Quote />} />

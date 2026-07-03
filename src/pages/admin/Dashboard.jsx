@@ -63,7 +63,7 @@ function Dashboard() {
   }
 
   const statCards = [
-    { label: 'Ventas totales', value: `$${stats.totalRevenue.toFixed(2)}`, change: '+0%', positive: true, icon: DollarSign, color: 'bg-green-500' },
+    { label: 'Ventas totales', value: `$${(stats.totalRevenue ?? 0).toFixed(2)}`, change: '+0%', positive: true, icon: DollarSign, color: 'bg-green-500' },
     { label: 'Productos', value: String(stats.totalProducts), change: 'Total', positive: true, icon: Package, color: 'bg-blue-500' },
     { label: 'Usuarios', value: String(stats.totalUsers), change: 'Registrados', positive: true, icon: Users, color: 'bg-purple-500' },
     { label: 'Ordenes pendientes', value: String(stats.pendingOrders), change: 'Pendientes', positive: false, icon: Clock, color: 'bg-amber-500' },

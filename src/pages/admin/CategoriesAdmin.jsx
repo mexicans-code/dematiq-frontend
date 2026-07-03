@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Plus, X, Search, ChevronDown, ChevronRight, FolderTree } from 'lucide-react'
+import { Plus, X, Search, ChevronDown, ChevronRight, ToggleLeft, ToggleRight } from 'lucide-react'
 import { categoriesApi } from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
 import ConfirmModal from '../../components/ui/ConfirmModal'
+
+const statusLabels = { active: 'Activo', inactive: 'Inactivo' }
 
 function CategoryModal({ category, parents, onClose, onSave }) {
   const toast = useToast()
@@ -116,7 +118,7 @@ function CategoryModal({ category, parents, onClose, onSave }) {
   )
 }
 
-function CategoryRow({ cat, depth = 0, selectedCategory, onEdit, onDelete }) {
+function CategoryRow({ cat, depth = 0, selectedCategory, onEdit, onToggleStatus }) {
   const [expanded, setExpanded] = useState(true)
   const hasChildren = cat.subcategories && cat.subcategories.length > 0
 
@@ -155,6 +157,11 @@ function CategoryRow({ cat, depth = 0, selectedCategory, onEdit, onDelete }) {
           )}
         </td>
         <td className="py-3 px-4">
+          <span className={`px-2 py-1 rounded-full text-xs font-medium ${cat.status === 'active' ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'}`}>
+            {statusLabels[cat.status] || cat.status}
+          </span>
+        </td>
+        <td className="py-3 px-4">
           <div className="flex items-center gap-3">
             <button
               onClick={() => onEdit(cat)}
@@ -163,10 +170,10 @@ function CategoryRow({ cat, depth = 0, selectedCategory, onEdit, onDelete }) {
               Editar
             </button>
             <button
-              onClick={() => onDelete(cat)}
-              className="text-red-500 hover:text-red-600 font-medium text-xs"
+              onClick={() => onToggleStatus(cat)}
+              className={`inline-flex items-center gap-1 font-medium text-xs ${cat.status === 'active' ? 'text-red-500 hover:text-red-600' : 'text-green-600 hover:text-green-700'}`}
             >
-              Eliminar
+              {cat.status === 'active' ? <><ToggleLeft className="w-3.5 h-3.5" /> Deshabilitar</> : <><ToggleRight className="w-3.5 h-3.5" /> Activar</>}
             </button>
           </div>
         </td>
@@ -178,7 +185,7 @@ function CategoryRow({ cat, depth = 0, selectedCategory, onEdit, onDelete }) {
           depth={depth + 1}
           selectedCategory={selectedCategory}
           onEdit={onEdit}
-          onDelete={onDelete}
+          onToggleStatus={onToggleStatus}
         />
       ))}
     </>
@@ -218,26 +225,31 @@ function CategoriesAdmin() {
   const closeModal = () => setModal({ open: false, category: null })
   const handleSave = () => { closeModal(); load() }
 
-  const handleDelete = (category) => {
-    const hasChildren = category.subcategories && category.subcategories.length > 0
+  const handleToggleStatus = (category) => {
+    const isActive = category.status === 'active'
     setConfirm({
       category,
-      title: 'Eliminar categoría',
-      message: hasChildren
-        ? `"${category.name}" tiene subcategorías. Se eliminará la relación jerárquica pero las subcategorías se conservarán como principales. ¿Eliminar "${category.name}"?`
-        : `¿Estás seguro de eliminar "${category.name}"?`,
-      confirmLabel: 'Eliminar',
-      type: 'danger',
+      title: isActive ? 'Deshabilitar categoría' : 'Activar categoría',
+      message: isActive
+        ? `¿Estás seguro de deshabilitar "${category.name}"? Las subcategorías se conservarán.`
+        : `¿Estás seguro de activar "${category.name}"?`,
+      confirmLabel: isActive ? 'Deshabilitar' : 'Activar',
+      type: isActive ? 'danger' : 'warning',
     })
   }
 
-  const confirmDelete = async () => {
+  const confirmToggle = async () => {
     if (!confirm) return
     const { category } = confirm
+    const isActive = category.status === 'active'
     setConfirm(null)
     try {
-      await categoriesApi.delete(category.id)
-      toast.success('Categoría eliminada')
+      if (isActive) {
+        await categoriesApi.delete(category.id)
+      } else {
+        await categoriesApi.update(category.id, { status: 'active' })
+      }
+      toast.success(isActive ? 'Categoría deshabilitada' : 'Categoría activada')
       load()
     } catch (err) {
       toast.error(err.message)
@@ -312,17 +324,18 @@ function CategoriesAdmin() {
                 <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Slug</th>
                 <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Descripción</th>
                 <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Tipo</th>
+                <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Estado</th>
                 <th className="text-left py-3 px-4 font-medium text-neutral-400 dark:text-gray-500">Acciones</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-neutral-400 dark:text-gray-500">Cargando...</td>
+                  <td colSpan={6} className="py-8 text-center text-neutral-400 dark:text-gray-500">Cargando...</td>
                 </tr>
               ) : filteredTree.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-neutral-400 dark:text-gray-500">
+                  <td colSpan={6} className="py-8 text-center text-neutral-400 dark:text-gray-500">
                     {search ? 'No se encontraron categorías' : 'No hay categorías. Crea la primera.'}
                   </td>
                 </tr>
@@ -334,7 +347,7 @@ function CategoriesAdmin() {
                     depth={0}
                     selectedCategory={filterParent ? Number(filterParent) : null}
                     onEdit={openEdit}
-                    onDelete={handleDelete}
+                    onToggleStatus={handleToggleStatus}
                   />
                 ))
               )}
@@ -359,7 +372,7 @@ function CategoriesAdmin() {
           confirmLabel={confirm.confirmLabel}
           cancelLabel="Cancelar"
           type={confirm.type}
-          onConfirm={confirmDelete}
+          onConfirm={confirmToggle}
           onCancel={() => setConfirm(null)}
         />
       )}

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
 
@@ -7,6 +7,7 @@ import dematiq_logo from '../../assets/img/dematiq_login.png'
 
 function Login() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const toast = useToast()
   const { login } = useAuth()
   const [form, setForm] = useState({ email: '', password: '' })
@@ -18,7 +19,14 @@ function Login() {
     const result = await login(form.email, form.password)
     setLoading(false)
     if (result.success) {
-      navigate('/admin/dashboard')
+      const redirect = searchParams.get('redirect')
+      if (redirect) {
+        navigate(redirect, { replace: true })
+      } else if (result.user?.role === 'admin') {
+        navigate('/admin/dashboard', { replace: true })
+      } else {
+        navigate('/perfil', { replace: true })
+      }
     } else {
       toast.error(result.error)
     }
