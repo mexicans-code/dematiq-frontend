@@ -62,12 +62,6 @@ export function CartProvider({ children }) {
   const [state, dispatch] = useReducer(cartReducer, null, loadCart)
 
   useEffect(() => {
-    const onLogout = () => dispatch({ type: 'CLEAR_CART' })
-    window.addEventListener('auth:logout', onLogout)
-    return () => window.removeEventListener('auth:logout', onLogout)
-  }, [])
-
-  useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   }, [state])
 
