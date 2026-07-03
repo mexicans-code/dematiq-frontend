@@ -206,7 +206,7 @@ function Products() {
       productsApi.getAll({ status: 'active' }),
       brandsApi.getAll({ status: 'active' }),
     ]).then(([productsData, brandsData]) => {
-      setProducts(productsData)
+      setProducts(Array.isArray(productsData) ? productsData : productsData.products)
       setBrands(brandsData)
     }).catch(console.error)
     .finally(() => setLoading(false))

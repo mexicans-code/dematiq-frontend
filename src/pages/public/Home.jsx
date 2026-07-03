@@ -32,7 +32,8 @@ function Home() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    productsApi.getAll().then((products) => {
+    productsApi.getAll().then((res) => {
+      const products = Array.isArray(res) ? res : res.products
       setFeaturedProducts(products.slice(0, 4))
     }).catch(console.error)
   }, [])

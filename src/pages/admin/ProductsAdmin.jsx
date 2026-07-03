@@ -192,6 +192,8 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
   )
 }
 
+const LIMIT = 15
+
 function ProductsAdmin() {
   const toast = useToast()
   const [products, setProducts] = useState([])
@@ -200,16 +202,27 @@ function ProductsAdmin() {
   const [modal, setModal] = useState({ open: false, product: null })
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
+  const [page, setPage] = useState(1)
+  const [pagination, setPagination] = useState(null)
+  const [statusFilter, setStatusFilter] = useState('')
   const [confirm, setConfirm] = useState(null)
+  const searchTimer = useRef(null)
 
-  const load = () => {
+  const load = (opts = {}) => {
     setLoading(true)
+    const params = {
+      page: opts.page ?? page,
+      limit: LIMIT,
+      search: opts.search ?? search,
+      status: opts.status ?? statusFilter,
+    }
     Promise.all([
-      productsApi.getAll(),
+      productsApi.getAll(params),
       categoriesApi.getTree(),
       brandsApi.getAll(),
-    ]).then(([products, categories, brands]) => {
-      setProducts(products)
+    ]).then(([res, categories, brands]) => {
+      setProducts(res.products)
+      setPagination(res.pagination)
       setCategories(categories)
       setBrands(brands)
     }).catch(console.error)
@@ -218,11 +231,31 @@ function ProductsAdmin() {
 
   useEffect(() => { load() }, [])
 
+  const handleSearchChange = (value) => {
+    setSearch(value)
+    if (searchTimer.current) clearTimeout(searchTimer.current)
+    searchTimer.current = setTimeout(() => {
+      setPage(1)
+      load({ search: value, page: 1 })
+    }, 400)
+  }
+
+  const handleStatusFilter = (value) => {
+    setStatusFilter(value)
+    setPage(1)
+    load({ status: value, page: 1 })
+  }
+
+  const goToPage = (p) => {
+    setPage(p)
+    load({ page: p })
+  }
+
   const openNew = () => setModal({ open: true, product: null })
   const openEdit = (product) => setModal({ open: true, product })
   const closeModal = () => setModal({ open: false, product: null })
 
-  const handleSave = () => { closeModal(); load() }
+  const handleSave = () => { closeModal(); load({ page }) }
 
   const handleToggleStatus = async (product) => {
     const isActive = product.status === 'active'
@@ -248,16 +281,11 @@ function ProductsAdmin() {
       } else {
         await productsApi.update(product.id, { status: 'active' })
       }
-      load()
+      load({ page })
     } catch (err) {
       toast.error(err.message)
     }
   }
-
-  const filtered = products.filter((p) =>
-    p.name.toLowerCase().includes(search.toLowerCase()) ||
-    p.sku?.toLowerCase().includes(search.toLowerCase())
-  )
 
   return (
     <div>
@@ -269,15 +297,26 @@ function ProductsAdmin() {
         </button>
       </div>
 
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-300 dark:text-gray-600" />
-        <input
-          type="text"
-          placeholder="Buscar por nombre o SKU..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-64 pl-9 pr-4 py-2 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
-        />
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="relative flex-1 min-w-[200px] max-w-xs">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-300 dark:text-gray-600" />
+          <input
+            type="text"
+            placeholder="Buscar por nombre o SKU..."
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
+          />
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => handleStatusFilter(e.target.value)}
+          className="px-3 py-2 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 dark:text-gray-200"
+        >
+          <option value="">Todos los estados</option>
+          <option value="active">Activos</option>
+          <option value="inactive">Inactivos</option>
+        </select>
       </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl border border-neutral-100 dark:border-gray-700 overflow-hidden">
@@ -300,11 +339,11 @@ function ProductsAdmin() {
                 <tr>
                   <td colSpan={8} className="py-8 text-center text-neutral-400 dark:text-gray-500">Cargando...</td>
                 </tr>
-              ) : filtered.length === 0 ? (
+              ) : products.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-8 text-center text-neutral-400 dark:text-gray-500">No hay productos</td>
                 </tr>
-              ) : filtered.map((product) => (
+              ) : products.map((product) => (
                 <tr key={product.id} className="border-b border-neutral-50 dark:border-gray-700 hover:bg-neutral-50 dark:hover:bg-gray-700">
                   <td className="py-3 px-4 font-medium text-black dark:text-white">{product.name}</td>
                   <td className="py-3 px-4 text-neutral-500 dark:text-gray-400 font-mono text-xs">{product.sku}</td>
@@ -331,6 +370,28 @@ function ProductsAdmin() {
           </table>
         </div>
       </div>
+
+      {pagination && pagination.pages > 1 && (
+        <div className="flex items-center justify-between mt-4 text-sm text-neutral-500 dark:text-gray-400">
+          <span>Página {pagination.page} de {pagination.pages} ({pagination.total} productos)</span>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => goToPage(page - 1)}
+              disabled={page <= 1}
+              className="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-gray-600 disabled:opacity-40 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Anterior
+            </button>
+            <button
+              onClick={() => goToPage(page + 1)}
+              disabled={page >= pagination.pages}
+              className="px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-gray-600 disabled:opacity-40 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              Siguiente
+            </button>
+          </div>
+        </div>
+      )}
 
       {modal.open && (
         <ProductModal

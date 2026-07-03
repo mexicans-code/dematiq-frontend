@@ -39,7 +39,8 @@ function Dashboard() {
       productsApi.getAll(),
       ordersApi.getAll({ limit: 100 }),
       usersApi.getAll(),
-    ]).then(([products, result, users]) => {
+    ]).then(([res, result, users]) => {
+      const products = Array.isArray(res) ? res : res.products
       const allOrders = Array.isArray(result) ? result : result.orders
       const totalRevenue = allOrders.reduce((sum, o) => sum + o.total, 0)
       const pendingOrders = allOrders.filter((o) => o.status === 'pending' || o.status === 'processing')

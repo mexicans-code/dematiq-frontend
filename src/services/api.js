@@ -150,9 +150,16 @@ export const productsApi = {
     if (params.category_id) query.set('category_id', params.category_id);
     if (params.status) query.set('status', params.status);
     if (params.search) query.set('search', params.search);
+    if (params.page) query.set('page', params.page);
+    if (params.limit) query.set('limit', params.limit);
     const qs = query.toString();
     const res = await request(`/products${qs ? `?${qs}` : ''}`);
-    return (res.data || []).map(mapProduct);
+    const data = res.data || {};
+    const products = Array.isArray(data) ? data : (data.products || []);
+    return {
+      products: products.map(mapProduct),
+      pagination: data.pagination || null,
+    };
   },
 
   getById: async (id) => {
