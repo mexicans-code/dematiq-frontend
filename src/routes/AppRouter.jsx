@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import PublicLayout from '../components/layout/PublicLayout'
 import AdminLayout from '../components/layout/AdminLayout'
 import ProtectedRoute from './ProtectedRoute'
-import Home from '../pages/public/Home'
 import Products from '../pages/public/Products'
 import ProductDetail from '../pages/public/ProductDetail'
 import Cart from '../pages/public/Cart'
@@ -26,9 +25,9 @@ function AppRouter() {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Products />} />
         <Route path="/inicio" element={<Navigate to="/" replace />} />
-        <Route path="/productos" element={<Products />} />
+        <Route path="/productos" element={<Navigate to="/" replace />} />
         <Route path="/productos/:id" element={<ProductDetail />} />
         <Route path="/cotizar" element={<Quote />} />
         <Route path="/carrito" element={<Cart />} />
