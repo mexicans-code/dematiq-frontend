@@ -192,7 +192,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
   )
 }
 
-const LIMIT = 15
+const LIMIT = 10
 
 function ProductsAdmin() {
   const toast = useToast()
