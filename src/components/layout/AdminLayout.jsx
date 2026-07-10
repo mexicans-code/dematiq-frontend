@@ -34,7 +34,7 @@ function Sidebar({ mobileOpen, onClose }) {
           to="/admin/dashboard"
           className="font-heading text-2xl font-bold uppercase tracking-wide text-white"
         >
-          {import.meta.env.VITE_SITE_NAME || 'Dematiq'}
+          Dematiq
         </Link>
         <span className="block mt-1 text-neutral-500 text-xs uppercase tracking-widest">Panel de administración</span>
       </div>
@@ -126,7 +126,7 @@ function AdminLayout() {
     <div className="min-h-screen">
       <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-black dark:bg-gray-900 flex items-center justify-between px-4 z-30">
         <Link to="/admin/dashboard" className="font-heading text-lg font-bold uppercase tracking-wide text-white">
-          {import.meta.env.VITE_SITE_NAME || 'Dematiq'}
+          Dematiq
         </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle className="text-white/80 hover:text-white" />
