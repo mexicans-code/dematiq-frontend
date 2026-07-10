@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import ThemeToggle from '../ui/ThemeToggle'
+import logo from '../../assets/img/logo.png'
 import {
   LayoutDashboard,
   Package,
@@ -30,11 +31,8 @@ function Sidebar({ mobileOpen, onClose }) {
   const content = (
     <div className="flex flex-col h-full">
       <div className="px-7 pt-10 pb-7">
-        <Link
-          to="/admin/dashboard"
-          className="font-heading text-2xl font-bold uppercase tracking-wide text-white"
-        >
-          Dematiq v2
+        <Link to="/admin/dashboard" className="block">
+          <img src={logo} alt="Dematiq v2" className="h-10" />
         </Link>
         <span className="block mt-1 text-neutral-500 text-xs uppercase tracking-widest">Panel de administración</span>
       </div>
@@ -125,8 +123,8 @@ function AdminLayout() {
   return (
     <div className="min-h-screen">
       <div className="md:hidden fixed top-0 left-0 right-0 h-14 bg-black dark:bg-gray-900 flex items-center justify-between px-4 z-30">
-        <Link to="/admin/dashboard" className="font-heading text-lg font-bold uppercase tracking-wide text-white">
-          Dematiq v2
+        <Link to="/admin/dashboard">
+          <img src={logo} alt="Dematiq v2" className="h-8" />
         </Link>
         <div className="flex items-center gap-1">
           <ThemeToggle className="text-white/80 hover:text-white" />

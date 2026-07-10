@@ -3,7 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
 
-import dematiq_logo from '../../assets/img/dematiq_login.png'
+import dematiq_logo from '../../assets/img/logo.png'
 
 function Login() {
   const navigate = useNavigate()

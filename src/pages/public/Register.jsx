@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
 
-import dematiq_register from '../../assets/img/dematiq_register.png'
+import dematiq_register from '../../assets/img/logo.png'
 
 function Register() {
   const navigate = useNavigate()

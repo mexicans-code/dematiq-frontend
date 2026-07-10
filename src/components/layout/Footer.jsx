@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Cpu } from 'lucide-react'
+import logo from '../../assets/img/logo.png'
 
 function Footer() {
   const currentYear = new Date().getFullYear()
@@ -9,9 +9,8 @@ function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <div className="flex items-center gap-2 mb-4">
-              <Cpu className="w-6 h-6 text-accent-400" />
-              <h3 className="font-heading text-xl font-bold uppercase tracking-wide">Dematiq v2</h3>
+            <div className="mb-4">
+              <img src={logo} alt="Dematiq v2" className="h-10" />
             </div>
             <p className="text-primary-200 text-sm">
               Partes PLC y automatización industrial. Calidad certificada para la industria.
