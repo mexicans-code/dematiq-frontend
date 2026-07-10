@@ -343,20 +343,20 @@ function ProductsAdmin() {
       </div>
 
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <div className="relative flex-1 min-w-[200px] max-w-xs">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-300 dark:text-gray-600" />
+        <div className="relative flex-1 min-w-[280px] max-w-md">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-300 dark:text-gray-600" />
           <input
             type="text"
             placeholder="Buscar por nombre o SKU..."
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
+            className="w-full pl-12 pr-5 py-3 text-base border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
           />
         </div>
         <select
           value={statusFilter}
           onChange={(e) => handleStatusFilter(e.target.value)}
-          className="px-3 py-2 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 dark:text-gray-200"
+          className="px-4 py-3 text-base border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-white dark:bg-gray-800 dark:text-gray-200"
         >
           <option value="">Todos los estados</option>
           <option value="active">Activos</option>
