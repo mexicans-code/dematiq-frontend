@@ -88,6 +88,18 @@ function OrderDetail({ order, onClose, onStatusChange, onReverify }) {
             </div>
           )}
 
+          {order.needs_invoice && (
+            <div>
+              <h3 className="font-heading text-sm font-bold text-black dark:text-white uppercase tracking-wide mb-2">Datos de factura</h3>
+              <div className="text-sm text-neutral-600 dark:text-gray-300 space-y-0.5 bg-neutral-50 dark:bg-gray-700 rounded-xl p-3">
+                <p><span className="text-neutral-400 dark:text-gray-500">RFC:</span> {order.invoice_rfc}</p>
+                <p><span className="text-neutral-400 dark:text-gray-500">Razón Social:</span> {order.invoice_business_name}</p>
+                <p><span className="text-neutral-400 dark:text-gray-500">Email:</span> {order.invoice_email}</p>
+                <p><span className="text-neutral-400 dark:text-gray-500">Uso CFDI:</span> {order.invoice_cfdi_use}</p>
+              </div>
+            </div>
+          )}
+
           {order.shipping_address && (
             <div>
               <h3 className="font-heading text-sm font-bold text-black dark:text-white uppercase tracking-wide mb-2">Dirección de envío</h3>

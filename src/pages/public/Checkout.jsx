@@ -3,7 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
 import { ordersApi, paymentsApi } from '../../services/api'
-import { CreditCard, ShieldCheck, AlertCircle, ExternalLink } from 'lucide-react'
+import { CreditCard, ShieldCheck, AlertCircle, ExternalLink, FileText } from 'lucide-react'
+
+const cfdiOptions = [
+  { value: 'G01', label: 'Adquisición de mercancías' },
+  { value: 'G02', label: 'Devoluciones, descuentos o bonificaciones' },
+  { value: 'G03', label: 'Gastos en general' },
+  { value: 'I01', label: 'Construcciones' },
+  { value: 'I02', label: 'Mobiliario y equipo de oficina' },
+  { value: 'I03', label: 'Equipo de transporte' },
+  { value: 'D01', label: 'Honorarios médicos, dentales y gastos hospitalarios' },
+  { value: 'D10', label: 'Pagos por servicios educativos' },
+]
 
 function Checkout() {
   const navigate = useNavigate()
@@ -11,6 +22,7 @@ function Checkout() {
   const { items, totalPrice, clearCart } = useCart()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [needsInvoice, setNeedsInvoice] = useState(false)
   const [form, setForm] = useState({
     company: '',
     contact: '',
@@ -18,6 +30,12 @@ function Checkout() {
     city: '',
     zip: '',
     notes: '',
+  })
+  const [invoice, setInvoice] = useState({
+    rfc: '',
+    business_name: '',
+    email: user?.email || '',
+    cfdi_use: 'G03',
   })
 
   const handleSubmit = async (e) => {
@@ -29,7 +47,7 @@ function Checkout() {
     setError('')
     setSubmitting(true)
     try {
-      const order = await ordersApi.create({
+      const payload = {
         user_id: user.id,
         items: items.map((item) => ({
           product_id: item.id,
@@ -44,7 +62,17 @@ function Checkout() {
           zip: form.zip,
         },
         notes: form.notes || undefined,
-      })
+      }
+
+      if (needsInvoice) {
+        payload.needs_invoice = true
+        payload.invoice_rfc = invoice.rfc
+        payload.invoice_business_name = invoice.business_name
+        payload.invoice_email = invoice.email
+        payload.invoice_cfdi_use = invoice.cfdi_use
+      }
+
+      const order = await ordersApi.create(payload)
 
       const data = await paymentsApi.createPreference(order.id)
       clearCart()
@@ -108,6 +136,72 @@ function Checkout() {
                 <textarea rows={2} value={form.notes} onChange={(e) => setForm({...form, notes: e.target.value})} className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none" />
               </div>
             </div>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-neutral-100 p-6">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={needsInvoice}
+                onChange={(e) => setNeedsInvoice(e.target.checked)}
+                className="w-5 h-5 rounded border-neutral-300 text-primary-500 focus:ring-primary-500"
+              />
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-neutral-500" />
+                <span className="font-heading text-lg font-bold text-black uppercase tracking-wide">¿Necesitas factura?</span>
+              </div>
+            </label>
+
+            {needsInvoice && (
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-neutral-50 rounded-xl border border-neutral-200">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">RFC <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={13}
+                    value={invoice.rfc}
+                    onChange={(e) => setInvoice({...invoice, rfc: e.target.value.toUpperCase()})}
+                    placeholder="XXX000000XXX"
+                    className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Razón Social <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    required
+                    value={invoice.business_name}
+                    onChange={(e) => setInvoice({...invoice, business_name: e.target.value})}
+                    placeholder="Nombre o razón social"
+                    className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Correo para factura <span className="text-red-500">*</span></label>
+                  <input
+                    type="email"
+                    required
+                    value={invoice.email}
+                    onChange={(e) => setInvoice({...invoice, email: e.target.value})}
+                    placeholder="factura@ejemplo.com"
+                    className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Uso de CFDI</label>
+                  <select
+                    value={invoice.cfdi_use}
+                    onChange={(e) => setInvoice({...invoice, cfdi_use: e.target.value})}
+                    className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+                  >
+                    {cfdiOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="bg-white rounded-2xl border border-neutral-100 p-6">

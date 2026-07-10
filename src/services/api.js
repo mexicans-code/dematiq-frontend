@@ -79,6 +79,11 @@ function mapOrder(o) {
     shipping_address_id: o.shipping_address_id,
     shipping_address: o.shipping_address || null,
     mp_order_id: o.mp_order_id || null,
+    needs_invoice: o.needs_invoice || false,
+    invoice_rfc: o.invoice_rfc || '',
+    invoice_business_name: o.invoice_business_name || '',
+    invoice_email: o.invoice_email || '',
+    invoice_cfdi_use: o.invoice_cfdi_use || 'G03',
     created_at: o.created_at,
     updated_at: o.updated_at,
     itemCount: (o.order_items || []).reduce((sum, i) => sum + i.quantity, 0),
@@ -216,7 +221,7 @@ export const ordersApi = {
       method: 'POST',
       body: JSON.stringify(data),
     });
-    return mapOrder(res.data);
+    return mapOrder(res.data || res);
   },
 
   updateStatus: async (id, status) => {
