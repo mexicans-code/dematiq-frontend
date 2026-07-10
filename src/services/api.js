@@ -60,6 +60,8 @@ function mapProduct(p) {
     brand_id: p.brand_id || null,
     brand_logo: p.brands?.logo_url || null,
     brand_slug: p.brands?.slug || null,
+    tax_id: p.tax_id || '',
+    unit_key: p.unit_key || 'H87',
     created_at: p.created_at,
     updated_at: p.updated_at,
   };
@@ -84,6 +86,8 @@ function mapOrder(o) {
     invoice_business_name: o.invoice_business_name || '',
     invoice_email: o.invoice_email || '',
     invoice_cfdi_use: o.invoice_cfdi_use || 'G03',
+    invoice_zip: o.invoice_zip || '',
+    invoice_regime: o.invoice_regime || '',
     created_at: o.created_at,
     updated_at: o.updated_at,
     itemCount: (o.order_items || []).reduce((sum, i) => sum + i.quantity, 0),

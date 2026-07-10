@@ -32,6 +32,8 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
     image_url: product?.image_url || '',
     specs: product?.specs ? JSON.stringify(product.specs, null, 2) : '[]',
     status: product?.status || 'active',
+    tax_id: product?.tax_id || '',
+    unit_key: product?.unit_key || 'H87',
   })
   const [pendingFile, setPendingFile] = useState(null)
   const [preview, setPreview] = useState(product?.image_url || '')
@@ -76,6 +78,8 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
         image_url: imageUrl || null,
         specs,
         status: form.status,
+        tax_id: form.tax_id || null,
+        unit_key: form.unit_key || 'H87',
       }
       const saved = isEditing
         ? await productsApi.update(product.id, payload)
@@ -139,6 +143,21 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Stock</label>
               <input type="number" name="stock" required min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Clave SAT</label>
+              <input type="text" maxLength={8} value={form.tax_id} onChange={(e) => setForm({ ...form, tax_id: e.target.value.replace(/\D/g, '').slice(0, 8) })} placeholder="53101602" className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Clave Unidad</label>
+              <select value={form.unit_key} onChange={(e) => setForm({ ...form, unit_key: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200">
+                <option value="H87">Pieza (H87)</option>
+                <option value="EA">Elemento (EA)</option>
+                <option value="MTR">Metro (MTR)</option>
+                <option value="KGM">Kilogramo (KGM)</option>
+                <option value="LTR">Litro (LTR)</option>
+                <option value="C62">Unidad (C62)</option>
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Estado</label>

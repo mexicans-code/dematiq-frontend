@@ -96,6 +96,8 @@ function OrderDetail({ order, onClose, onStatusChange, onReverify }) {
                 <p><span className="text-neutral-400 dark:text-gray-500">Razón Social:</span> {order.invoice_business_name}</p>
                 <p><span className="text-neutral-400 dark:text-gray-500">Email:</span> {order.invoice_email}</p>
                 <p><span className="text-neutral-400 dark:text-gray-500">Uso CFDI:</span> {order.invoice_cfdi_use}</p>
+                <p><span className="text-neutral-400 dark:text-gray-500">CP Fiscal:</span> {order.invoice_zip}</p>
+                <p><span className="text-neutral-400 dark:text-gray-500">Régimen:</span> {order.invoice_regime}</p>
               </div>
             </div>
           )}

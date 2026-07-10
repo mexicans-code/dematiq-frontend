@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
 import { ordersApi, paymentsApi } from '../../services/api'
-import { CreditCard, ShieldCheck, AlertCircle, ExternalLink, FileText } from 'lucide-react'
+import { AlertCircle, ExternalLink, FileText } from 'lucide-react'
 
 const cfdiOptions = [
   { value: 'G01', label: 'Adquisición de mercancías' },
@@ -36,6 +36,8 @@ function Checkout() {
     business_name: '',
     email: user?.email || '',
     cfdi_use: 'G03',
+    zip: '',
+    regime: '601',
   })
 
   const handleSubmit = async (e) => {
@@ -70,6 +72,8 @@ function Checkout() {
         payload.invoice_business_name = invoice.business_name
         payload.invoice_email = invoice.email
         payload.invoice_cfdi_use = invoice.cfdi_use
+        payload.invoice_zip = invoice.zip
+        payload.invoice_regime = invoice.regime
       }
 
       const order = await ordersApi.create(payload)
@@ -198,6 +202,46 @@ function Checkout() {
                     {cfdiOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Código Postal Fiscal <span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={5}
+                    value={invoice.zip}
+                    onChange={(e) => setInvoice({...invoice, zip: e.target.value.replace(/\D/g, '').slice(0, 5)})}
+                    placeholder="12345"
+                    className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Régimen Fiscal</label>
+                  <select
+                    value={invoice.regime}
+                    onChange={(e) => setInvoice({...invoice, regime: e.target.value})}
+                    className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white"
+                  >
+                    <option value="601">General de Ley Personas Morales</option>
+                    <option value="605">Sueldos y Salarios e Ingresos Asimilados</option>
+                    <option value="606">Arrendamiento</option>
+                    <option value="607">Régimen de Enajenación o Adquisición de Bienes</option>
+                    <option value="608">Demás ingresos</option>
+                    <option value="609">Consolidación</option>
+                    <option value="610">Residentes en el Extranjero sin Establecimiento Permanente en México</option>
+                    <option value="611">Ingresos por Dividendos (socios y accionistas)</option>
+                    <option value="612">Personas Físicas con Actividades Empresariales y Profesionales</option>
+                    <option value="614">Ingresos por intereses</option>
+                    <option value="615">Régimen de los ingresos por obtención de premios</option>
+                    <option value="616">Sin obligaciones fiscales</option>
+                    <option value="620">Sociedades Cooperativas de Producción que optan por diferir sus ingresos</option>
+                    <option value="621">Incorporación Fiscal</option>
+                    <option value="622">Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras</option>
+                    <option value="623">Opcional para Grupos de Sociedades</option>
+                    <option value="624">Coordinados</option>
+                    <option value="625">Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas</option>
+                    <option value="626">Régimen Simplificado de Confianza</option>
                   </select>
                 </div>
               </div>
