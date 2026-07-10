@@ -37,6 +37,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
   })
   const [pendingFile, setPendingFile] = useState(null)
   const [preview, setPreview] = useState(product?.image_url || '')
+  const [previewOpen, setPreviewOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef(null)
 
@@ -165,8 +166,19 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
                 )}
               </div>
               {preview && (
-                <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-neutral-200 dark:border-gray-600">
+                <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-neutral-200 dark:border-gray-600 cursor-pointer" onClick={() => setPreviewOpen(true)}>
                   <img src={preview} alt="" className="w-full h-full object-cover" />
+                </div>
+              )}
+              {previewOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setPreviewOpen(false)}>
+                  <div className="fixed inset-0 bg-black/70" />
+                  <div className="relative max-w-2xl max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl">
+                    <img src={preview} alt="" className="w-full h-full object-contain" />
+                    <button type="button" onClick={() => setPreviewOpen(false)} className="absolute top-2 right-2 p-1.5 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors">
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
