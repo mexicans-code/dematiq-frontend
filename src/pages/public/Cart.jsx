@@ -135,16 +135,12 @@ function Cart() {
                 <span>Envío</span>
                 <span className="text-green-600 font-medium">Gratis</span>
               </div>
-              <div className="flex justify-between text-neutral-500 dark:text-gray-400">
-                <span>IVA (16%)</span>
-                <span className="text-neutral-800 dark:text-gray-200 font-medium">${(totalPrice * 0.16).toFixed(2)}</span>
-              </div>
             </div>
 
             <div className="border-t border-neutral-100 dark:border-gray-700 mt-4 pt-4 flex justify-between items-baseline">
               <span className="font-heading text-base font-bold text-black dark:text-white uppercase tracking-wide">Total</span>
               <span className="text-xl font-bold text-primary-500">
-                ${(totalPrice * 1.16).toFixed(2)}
+                ${totalPrice.toFixed(2)}
               </span>
             </div>
 
