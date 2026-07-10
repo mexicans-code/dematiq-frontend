@@ -60,8 +60,6 @@ function mapProduct(p) {
     brand_id: p.brand_id || null,
     brand_logo: p.brands?.logo_url || null,
     brand_slug: p.brands?.slug || null,
-    tax_id: p.tax_id || '',
-    unit_key: p.unit_key || 'H87',
     created_at: p.created_at,
     updated_at: p.updated_at,
   };
