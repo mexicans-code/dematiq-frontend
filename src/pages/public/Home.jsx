@@ -106,7 +106,7 @@ function Home() {
                 <div className="absolute inset-4 border border-white/10 rounded-2xl flex items-center justify-center">
                   <div className="text-center space-y-4">
                     <Cpu className="w-24 h-24 mx-auto text-white/30" />
-                    <p className="text-white/40 text-sm uppercase tracking-widest">Dematiq</p>
+                    <p className="text-white/40 text-sm uppercase tracking-widest">Dematiq v2</p>
                   </div>
                 </div>
               </div>
@@ -208,7 +208,7 @@ function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <span className="text-xs font-semibold uppercase tracking-widest text-neutral-400 dark:text-gray-500">Por qué elegirnos</span>
-            <h2 className="font-heading text-4xl md:text-5xl font-bold text-black dark:text-white mt-2 uppercase">Ventajas Dematiq</h2>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-black dark:text-white mt-2 uppercase">Ventajas Dematiq v2</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {benefits.map((b) => {

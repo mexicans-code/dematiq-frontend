@@ -11,7 +11,7 @@ function Footer() {
           <div>
             <div className="flex items-center gap-2 mb-4">
               <Cpu className="w-6 h-6 text-accent-400" />
-              <h3 className="font-heading text-xl font-bold uppercase tracking-wide">Dematiq</h3>
+              <h3 className="font-heading text-xl font-bold uppercase tracking-wide">Dematiq v2</h3>
             </div>
             <p className="text-primary-200 text-sm">
               Partes PLC y automatización industrial. Calidad certificada para la industria.
@@ -46,7 +46,7 @@ function Footer() {
         </div>
 
         <div className="border-t border-primary-700 mt-8 pt-8 text-center text-primary-300 text-sm">
-          &copy; {currentYear} Dematiq. Todos los derechos reservados.
+          &copy; {currentYear} Dematiq v2. Todos los derechos reservados.
         </div>
       </div>
     </footer>
