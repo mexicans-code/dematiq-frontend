@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Plus, X, Search, ToggleLeft, ToggleRight, Upload as UploadIcon, Trash2 } from 'lucide-react'
+import { Plus, X, Search, ToggleLeft, ToggleRight, Upload as UploadIcon, Trash2, ListPlus } from 'lucide-react'
 import { productsApi, categoriesApi, brandsApi, uploadImage } from '../../services/api'
 import { useToast } from '../../contexts/ToastContext'
 import ConfirmModal from '../../components/ui/ConfirmModal'
@@ -31,6 +31,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
     description: product?.description || '',
     image_url: product?.image_url || '',
     specs: product?.specs ? JSON.stringify(product.specs, null, 2) : '[]',
+    featuresList: Array.isArray(product?.specs) ? [...product.specs] : [],
     status: product?.status || 'active',
 
   })
@@ -64,8 +65,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
       }
       if (preview && !form.image_url) URL.revokeObjectURL(preview)
 
-      let specs
-      try { specs = JSON.parse(form.specs) } catch { specs = [] }
+      const specs = form.featuresList.filter(Boolean)
       const payload = {
         name: form.name,
         sku: form.sku,
@@ -175,8 +175,39 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
               <textarea name="description" rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white resize-none bg-transparent dark:text-gray-200" />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Especificaciones (JSON)</label>
-              <textarea name="specs" rows={3} value={form.specs} onChange={(e) => setForm({ ...form, specs: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white resize-none font-mono text-xs bg-transparent dark:text-gray-200" placeholder='["Característica 1", "Característica 2"]' />
+              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Características</label>
+              <div className="space-y-2">
+                {form.featuresList.map((f, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={f}
+                      onChange={(e) => {
+                        const list = [...form.featuresList]
+                        list[i] = e.target.value
+                        setForm({ ...form, featuresList: list })
+                      }}
+                      placeholder={`Característica ${i + 1}`}
+                      className="flex-1 px-3 py-2 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setForm({ ...form, featuresList: form.featuresList.filter((_, j) => j !== i) })}
+                      className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setForm({ ...form, featuresList: [...form.featuresList, ''] })}
+                  className="flex items-center gap-1 text-sm text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                >
+                  <ListPlus className="w-4 h-4" />
+                  Agregar característica
+                </button>
+              </div>
             </div>
           </div>
 
