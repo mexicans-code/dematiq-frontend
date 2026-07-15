@@ -33,7 +33,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
     specs: product?.specs ? JSON.stringify(product.specs, null, 2) : '[]',
     featuresList: Array.isArray(product?.specs) ? [...product.specs] : [],
     status: product?.status || 'active',
-
+    price_on_request: product?.price_on_request || false,
   })
   const [pendingFile, setPendingFile] = useState(null)
   const [preview, setPreview] = useState(product?.image_url || '')
@@ -72,13 +72,13 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
         sku: form.sku,
         category_id: form.category_id ? Number(form.category_id) : null,
         brand_id: form.brand_id || null,
-        price: parseFloat(form.price),
+        price: form.price_on_request ? 0 : parseFloat(form.price),
         stock: parseInt(form.stock, 10),
         description: form.description,
         image_url: imageUrl || null,
         specs,
         status: form.status,
-
+        price_on_request: form.price_on_request,
       }
       const saved = isEditing
         ? await productsApi.update(product.id, payload)
@@ -136,8 +136,12 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
               </select>
             </div>
             <div>
+              <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                <input type="checkbox" checked={form.price_on_request} onChange={(e) => setForm({ ...form, price_on_request: e.target.checked, price: e.target.checked ? '' : form.price })} className="w-4 h-4 rounded border-neutral-300 dark:border-gray-600 text-primary-500 focus:ring-primary-500" />
+                <span className="text-sm font-medium text-neutral-700 dark:text-gray-300">Sin precio / Consultar precio</span>
+              </label>
               <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Precio</label>
-              <input type="number" name="price" required step="0.01" min="0" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
+              <input type="number" name="price" required={!form.price_on_request} step="0.01" min="0" value={form.price} disabled={form.price_on_request} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 disabled:bg-neutral-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed" />
             </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Stock</label>

@@ -405,30 +405,38 @@ function Products() {
                     <h3 className="text-sm font-semibold text-neutral-800 dark:text-gray-200 leading-snug mb-2 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors">
                       {product.name}
                     </h3>
-                    <p className="text-lg font-bold text-neutral-900 dark:text-white mb-3">
-                      ${product.price.toFixed(2)}
-                    </p>
+                    {product.price_on_request ? (
+                      <p className="text-lg font-bold text-primary-500 dark:text-primary-300 mb-3">
+                        Consultar precio
+                      </p>
+                    ) : (
+                      <p className="text-lg font-bold text-neutral-900 dark:text-white mb-3">
+                        ${product.price.toFixed(2)}
+                      </p>
+                    )}
                     <div className="flex gap-2">
-                      <button
-                        onClick={(e) => handleAddToCart(product, e)}
-                        className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 ${
-                          recentlyAdded === product.id
-                            ? 'bg-green-600 text-white'
-                            : 'bg-neutral-900 dark:bg-gray-600 text-white hover:bg-neutral-800 dark:hover:bg-gray-500 active:scale-[0.98]'
-                        }`}
-                      >
-                        {recentlyAdded === product.id ? (
-                          <>
-                            <Check className="w-3.5 h-3.5" />
-                            Agregado
-                          </>
-                        ) : (
-                          <>
-                            <ShoppingCart className="w-3.5 h-3.5" />
-                            Carrito
-                          </>
-                        )}
-                      </button>
+                      {!product.price_on_request && (
+                        <button
+                          onClick={(e) => handleAddToCart(product, e)}
+                          className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 ${
+                            recentlyAdded === product.id
+                              ? 'bg-green-600 text-white'
+                              : 'bg-neutral-900 dark:bg-gray-600 text-white hover:bg-neutral-800 dark:hover:bg-gray-500 active:scale-[0.98]'
+                          }`}
+                        >
+                          {recentlyAdded === product.id ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              Agregado
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingCart className="w-3.5 h-3.5" />
+                              Carrito
+                            </>
+                          )}
+                        </button>
+                      )}
                       <button
                         onClick={(e) => handleAddToQuote(product, e)}
                         className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 ${

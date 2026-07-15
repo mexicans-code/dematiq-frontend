@@ -92,9 +92,15 @@ function ProductDetail() {
             {product.name}
           </h1>
           <p className="text-sm text-neutral-400 dark:text-gray-500 mb-2">SKU: {product.sku}</p>
-          <p className="text-3xl font-bold text-black dark:text-white mb-6">
-            ${product.price.toFixed(2)}
-          </p>
+          {product.price_on_request ? (
+            <p className="text-3xl font-bold text-primary-500 dark:text-primary-300 mb-6">
+              Consultar precio
+            </p>
+          ) : (
+            <p className="text-3xl font-bold text-black dark:text-white mb-6">
+              ${product.price.toFixed(2)}
+            </p>
+          )}
           <p className="text-neutral-600 dark:text-gray-300 mb-6 leading-relaxed">
             {product.description}
           </p>
@@ -138,14 +144,16 @@ function ProductDetail() {
             </div>
           </div>
 
-          <button
-            onClick={handleAddToCart}
-            disabled={product.stock === 0}
-            className="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:bg-neutral-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-          >
-            <ShoppingCart className="w-5 h-5" />
-            {product.stock > 0 ? 'Agregar al carrito' : 'Agotado'}
-          </button>
+          {!product.price_on_request && (
+            <button
+              onClick={handleAddToCart}
+              disabled={product.stock === 0}
+              className="w-full bg-primary-500 text-white py-3 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:bg-neutral-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            >
+              <ShoppingCart className="w-5 h-5" />
+              {product.stock > 0 ? 'Agregar al carrito' : 'Agotado'}
+            </button>
+          )}
 
           <button
             onClick={handleAddToQuote}
@@ -153,7 +161,9 @@ function ProductDetail() {
             className={`w-full py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2 ${
               addedQuote
                 ? 'bg-green-500 text-white'
-                : 'border border-accent-500 text-accent-600 dark:text-accent-400 hover:bg-accent-500 hover:text-white'
+                : product.price_on_request
+                  ? 'bg-primary-500 text-white hover:bg-primary-600'
+                  : 'border border-accent-500 text-accent-600 dark:text-accent-400 hover:bg-accent-500 hover:text-white'
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {addedQuote ? (
@@ -164,7 +174,7 @@ function ProductDetail() {
             ) : (
               <>
                 <ClipboardList className="w-5 h-5" />
-                Agregar a cotización
+                {product.price_on_request ? 'Solicitar cotización' : 'Agregar a cotización'}
               </>
             )}
           </button>

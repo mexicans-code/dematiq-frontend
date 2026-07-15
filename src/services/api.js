@@ -47,6 +47,7 @@ function mapProduct(p) {
     slug: p.slug,
     sku: p.sku,
     price: Number(p.price ?? 0),
+    price_on_request: p.price_on_request || false,
     category: p.categories?.name || 'General',
     category_id: p.category_id,
     image: p.image_url || `/img/products/${p.slug || p.name.toLowerCase().replace(/\s+/g, '-')}.jpg`,
