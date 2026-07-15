@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
-import logo from '../../assets/img/logo.png'
+import { useLogo } from '../../hooks/useLogo'
 
 function Footer() {
+  const { logoUrl } = useLogo()
   const currentYear = new Date().getFullYear()
 
   return (
@@ -10,7 +11,7 @@ function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="mb-4">
-              <img src={logo} alt="Dematiq v2" className="h-10" />
+              <img src={logoUrl} alt="Dematiq v2" className="h-10" />
             </div>
             <p className="text-primary-200 text-sm">
               Partes PLC y automatización industrial. Calidad certificada para la industria.

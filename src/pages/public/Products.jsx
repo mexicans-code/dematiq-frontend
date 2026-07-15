@@ -4,8 +4,8 @@ import { useCart } from '../../contexts/CartContext'
 import { useQuote } from '../../contexts/QuoteContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { Search, ShoppingCart, ClipboardList, Check, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react'
-import logo from '../../assets/img/logo.png'
 import { productsApi, brandsApi } from '../../services/api'
+import { useLogo } from '../../hooks/useLogo'
 import CategorySidebar from '../../components/ui/CategorySidebar'
 
 function BrandLogoCarousel({ brands, selectedBrand, onSelectBrand }) {
@@ -257,6 +257,8 @@ function Products() {
     setRecentlyAddedQuote(product.id)
   }
 
+  const { logoUrl } = useLogo()
+
   const filtered = products.filter((p) => {
     const matchCategory = !selectedCategory || selectedCategory.filterIds.includes(p.category_id)
     const matchBrand = !selectedBrand || p.brand_id === selectedBrand.id
@@ -296,7 +298,7 @@ function Products() {
           </div>
 
           <Link to="/" className="ml-4">
-            <img src={logo} alt="Dematiq v2" className="h-14" />
+            <img src={logoUrl} alt="Dematiq v2" className="h-14" />
           </Link>
         </div>
       </div>

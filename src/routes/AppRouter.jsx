@@ -19,6 +19,7 @@ import CategoriesAdmin from '../pages/admin/CategoriesAdmin'
 import Orders from '../pages/admin/Orders'
 import Users from '../pages/admin/Users'
 import BrandsAdmin from '../pages/admin/BrandsAdmin'
+import Settings from '../pages/admin/Settings'
 
 
 function AppRouter() {
@@ -48,6 +49,7 @@ function AppRouter() {
           <Route path="/admin/ordenes" element={<Orders />} />
           <Route path="/admin/usuarios" element={<Users />} />
           <Route path="/admin/marcas" element={<BrandsAdmin />} />
+          <Route path="/admin/configuracion" element={<Settings />} />
         </Route>
       </Route>
     </Routes>

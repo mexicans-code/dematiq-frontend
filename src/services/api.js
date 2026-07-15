@@ -316,6 +316,20 @@ function mapBrand(b) {
   };
 }
 
+export const settingsApi = {
+  get: async (key) => {
+    const res = await request(`/settings/${key}`);
+    return res.data?.value || '';
+  },
+  update: async (key, value) => {
+    const res = await request(`/settings/${key}`, {
+      method: 'PUT',
+      body: JSON.stringify({ value }),
+    });
+    return res.data;
+  },
+};
+
 export const brandsApi = {
   getAll: async (params = {}) => {
     const query = new URLSearchParams();

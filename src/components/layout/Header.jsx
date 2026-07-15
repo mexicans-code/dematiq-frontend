@@ -5,6 +5,7 @@ import { useCart } from '../../contexts/CartContext'
 import { useQuote } from '../../contexts/QuoteContext'
 import { ShoppingCart, Menu, X, ClipboardList, User } from 'lucide-react'
 import ThemeToggle from '../ui/ThemeToggle'
+import { useLogo } from '../../hooks/useLogo'
 
 const navLinks = [
   { path: '/', label: 'Catálogo' },
@@ -19,6 +20,7 @@ function Header() {
   const { totalItems: quoteItems } = useQuote()
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const { logoUrl } = useLogo()
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/' || location.pathname.startsWith('/productos')
@@ -29,8 +31,8 @@ function Header() {
     <header className="bg-primary-500 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="font-heading text-2xl font-bold tracking-wide text-white uppercase">
-            Dematiq v2
+          <Link to="/">
+            <img src={logoUrl} alt="Dematiq v2" className="h-10" />
           </Link>
 
           <nav className="hidden md:flex items-center gap-2">
