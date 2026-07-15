@@ -4,6 +4,7 @@ import { useCart } from '../../contexts/CartContext'
 import { useQuote } from '../../contexts/QuoteContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { Search, ShoppingCart, ClipboardList, Check, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import logo from '../../assets/img/logo.png'
 import { productsApi, brandsApi } from '../../services/api'
 import CategorySidebar from '../../components/ui/CategorySidebar'
 
@@ -267,14 +268,17 @@ function Products() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-3xl md:text-4xl text-neutral-900 dark:text-white font-medium tracking-tight">Catálogo</h1>
+          <div className="flex items-center gap-3">
+            <img src={logo} alt="Dematiq v2" className="h-10" />
+            <h1 className="text-3xl md:text-4xl text-neutral-900 dark:text-white font-medium tracking-tight">Catálogo</h1>
+          </div>
           <p className="text-neutral-400 dark:text-gray-500 text-sm mt-1">
             {filtered.length} productos encontrados
             {selectedBrand && <span className="text-primary-500 dark:text-primary-300"> — {selectedBrand.name}</span>}
           </p>
         </div>
 
-        <div className="flex items-center gap-3 flex-1 md:max-w-lg">
+        <div className="flex items-center gap-3 flex-1">
           <button
             onClick={() => setShowSidebar(true)}
             className="md:hidden flex items-center gap-2 px-4 py-2 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg text-neutral-600 dark:text-gray-300 hover:bg-neutral-50 dark:hover:bg-gray-800 transition-colors"
