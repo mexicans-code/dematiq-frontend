@@ -5,6 +5,7 @@ import { useCart } from '../../contexts/CartContext'
 import { useQuote } from '../../contexts/QuoteContext'
 import { ShoppingCart, Menu, X, ClipboardList, User } from 'lucide-react'
 import ThemeToggle from '../ui/ThemeToggle'
+import logo from '../../assets/img/logo.png'
 
 const navLinks = [
   { path: '/', label: 'Catálogo' },
@@ -29,10 +30,6 @@ function Header() {
     <header className="bg-primary-500 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link to="/" className="font-heading text-2xl font-bold tracking-wide text-white uppercase">
-            Dematiq v2
-          </Link>
-
           <nav className="hidden md:flex items-center gap-2">
             {navLinks.map((link) => (
               <Link
@@ -50,6 +47,9 @@ function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <Link to="/">
+              <img src={logo} alt="Dematiq v2" className="h-12" />
+            </Link>
             <ThemeToggle className="text-white/80 hover:text-white" />
 
             <Link
