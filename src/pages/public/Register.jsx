@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
-import { useLogo } from '../../hooks/useLogo'
+import registerImg from '../../assets/img/dematiq_register.png'
 
 function Register() {
-  const { logoUrl } = useLogo()
   const navigate = useNavigate()
   const toast = useToast()
   const { register } = useAuth()
@@ -114,20 +113,12 @@ function Register() {
 
         <div className="relative hidden md:block min-h-[500px] bg-neutral-900 order-1 md:order-2">
           <img
-            src={logoUrl}
+            src={registerImg}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary-500/70 via-primary-500/20 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-8">
-            <h2 className="font-heading text-2xl text-white uppercase tracking-wide">
-              Dematiq v2
-            </h2>
-            <p className="text-white/70 text-sm mt-1">
-              Partes PLC y automatización industrial. Calidad certificada para la industria.
-            </p>
-          </div>
         </div>
       </div>
     </div>

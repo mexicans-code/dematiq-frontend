@@ -2,10 +2,9 @@ import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
-import { useLogo } from '../../hooks/useLogo'
+import loginImg from '../../assets/img/dematiq_login.png'
 
 function Login() {
-  const { logoUrl } = useLogo()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const toast = useToast()
@@ -91,7 +90,7 @@ function Login() {
 
         <div className="relative hidden md:block min-h-[500px] bg-neutral-900">
           <img
-            src={logoUrl}
+            src={loginImg}
             alt=""
             className="absolute inset-0 w-full h-full object-cover"
             loading="lazy"
