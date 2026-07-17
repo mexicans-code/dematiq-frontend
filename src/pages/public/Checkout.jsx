@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
-import { ordersApi, paymentsApi } from '../../services/api'
-import { AlertCircle, ExternalLink, FileText } from 'lucide-react'
+import { ordersApi, paymentsApi, settingsApi } from '../../services/api'
+import { AlertCircle, ExternalLink, FileText, Info } from 'lucide-react'
 
 const cfdiOptions = [
   { value: 'G01', label: 'Adquisición de mercancías' },
@@ -22,6 +22,11 @@ function Checkout() {
   const { items, totalPrice, clearCart } = useCart()
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [checkoutNotes, setCheckoutNotes] = useState('')
+
+  useEffect(() => {
+    settingsApi.get('checkout_notes').then(setCheckoutNotes).catch(() => {})
+  }, [])
   const [needsInvoice, setNeedsInvoice] = useState(false)
   const [form, setForm] = useState({
     company: '',
@@ -299,6 +304,15 @@ function Checkout() {
             </div>
           </div>
         </div>
+
+        {checkoutNotes && (
+          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6">
+            <div className="flex items-start gap-3">
+              <Info className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+              <div className="text-sm text-blue-800 whitespace-pre-line">{checkoutNotes}</div>
+            </div>
+          </div>
+        )}
       </form>
     </div>
   )
