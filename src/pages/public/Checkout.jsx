@@ -275,44 +275,46 @@ function Checkout() {
           </button>
         </div>
 
-        <div className="bg-white rounded-2xl border border-neutral-100 p-6 h-fit">
-          <h2 className="font-heading text-lg font-bold text-black mb-4 uppercase tracking-wide">Resumen</h2>
-          <div className="space-y-3">
-            {items.map((item) => (
-              <div key={item.id} className="flex justify-between text-sm">
-                <span className="text-neutral-600 truncate">
-                  {item.name} x{item.quantity}
-                </span>
-                <span className="font-medium text-neutral-800">
-                  ${(item.price * item.quantity).toFixed(2)}
-                </span>
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl border border-neutral-100 p-6">
+            <h2 className="font-heading text-lg font-bold text-black mb-4 uppercase tracking-wide">Resumen</h2>
+            <div className="space-y-3">
+              {items.map((item) => (
+                <div key={item.id} className="flex justify-between text-sm">
+                  <span className="text-neutral-600 truncate">
+                    {item.name} x{item.quantity}
+                  </span>
+                  <span className="font-medium text-neutral-800">
+                    ${(item.price * item.quantity).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div className="border-t mt-4 pt-4">
+              <div className="flex justify-between text-neutral-600 text-sm mb-1">
+                <span>Subtotal</span>
+                <span>${totalPrice.toFixed(2)}</span>
               </div>
-            ))}
-          </div>
-          <div className="border-t mt-4 pt-4">
-            <div className="flex justify-between text-neutral-600 text-sm mb-1">
-              <span>Subtotal</span>
-              <span>${totalPrice.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-neutral-600 text-sm mb-1">
-              <span>Envío</span>
-              <span>Grátis</span>
-            </div>
-            <div className="flex justify-between font-bold text-neutral-800 text-lg mt-2">
-              <span>Total</span>
-              <span>${totalPrice.toFixed(2)}</span>
+              <div className="flex justify-between text-neutral-600 text-sm mb-1">
+                <span>Envío</span>
+                <span>Grátis</span>
+              </div>
+              <div className="flex justify-between font-bold text-neutral-800 text-lg mt-2">
+                <span>Total</span>
+                <span>${totalPrice.toFixed(2)}</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        {checkoutNotes && (
-          <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6">
-            <div className="flex items-start gap-3">
-              <Info className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
-              <div className="text-sm text-blue-800 whitespace-pre-line">{checkoutNotes}</div>
+          {checkoutNotes && (
+            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6">
+              <div className="flex items-start gap-3">
+                <Info className="w-5 h-5 text-blue-500 mt-0.5 flex-shrink-0" />
+                <div className="text-sm text-blue-800 whitespace-pre-line">{checkoutNotes}</div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </form>
     </div>
   )
