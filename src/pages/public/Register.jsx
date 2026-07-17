@@ -119,6 +119,14 @@ function Register() {
             loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-primary-500/70 via-primary-500/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-8">
+            <h2 className="font-heading text-2xl text-white uppercase tracking-wide">
+              Dematiq v2
+            </h2>
+            <p className="text-white/70 text-sm mt-1">
+              Partes PLC y automatización industrial. Calidad certificada para la industria.
+            </p>
+          </div>
         </div>
       </div>
     </div>
