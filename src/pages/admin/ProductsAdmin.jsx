@@ -79,7 +79,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
         sku: form.sku,
         category_id: form.category_id ? Number(form.category_id) : null,
         brand_id: form.brand_id || null,
-        price: form.price_on_request ? 0 : parseFloat(form.price),
+        price: form.price_on_request ? 0 : parseFloat(form.price) * 1.16,
         stock: parseInt(form.stock, 10),
         description: form.description,
         image_url: imageUrl || null,
@@ -276,29 +276,28 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
                   <input type="checkbox" checked={form.price_on_request} onChange={(e) => setForm({ ...form, price_on_request: e.target.checked, price: e.target.checked ? '' : form.price })} className="w-4 h-4 rounded border-neutral-300 dark:border-gray-600 text-primary-500 focus:ring-primary-500" />
                   <span className="text-sm font-medium text-neutral-700 dark:text-gray-300">Sin precio / Consultar precio</span>
                 </label>
-                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Precio</label>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Precio base (sin IVA)</label>
                 <input type="number" name="price" required={!form.price_on_request} step="0.01" min="0" value={form.price} disabled={form.price_on_request} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 disabled:bg-neutral-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed" />
+                {!form.price_on_request && (
+                  <p className="text-xs text-neutral-400 dark:text-gray-500 mt-1">Precio final con IVA: <span className="font-semibold text-black dark:text-white">${((parseFloat(form.price) || 0) * 1.16).toFixed(2)}</span></p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Stock</label>
                 <input type="number" name="stock" required min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
               </div>
-              <div className="col-span-2 grid grid-cols-2 gap-4 p-3 bg-neutral-50 dark:bg-gray-700 rounded-xl">
+              <div className="col-span-2 grid grid-cols-3 gap-4 p-3 bg-neutral-50 dark:bg-gray-700 rounded-xl">
                 <div>
-                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Precio MA 16 (con IVA)</label>
+                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Precio base (sin IVA)</label>
                   <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (parseFloat(form.price) || 0).toFixed(2)}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Subtotal (sin IVA)</label>
-                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) / 1.16).toFixed(2)}</p>
-                </div>
-                <div>
                   <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">IVA (16%)</label>
-                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (((parseFloat(form.price) || 0) / 1.16) * 0.16).toFixed(2)}</p>
+                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (((parseFloat(form.price) || 0) * 0.16)).toFixed(2)}</p>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Subtotal + IVA</label>
-                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) / 1.16 + ((parseFloat(form.price) || 0) / 1.16) * 0.16).toFixed(2)}</p>
+                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Precio MA 16 (con IVA)</label>
+                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) * 1.16).toFixed(2)}</p>
                 </div>
               </div>
             </div>
