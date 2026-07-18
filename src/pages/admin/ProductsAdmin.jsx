@@ -64,8 +64,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
     setSaving(true)
     try {
       let imageUrl = form.image_url
@@ -114,7 +113,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4" onKeyDown={(e) => { if (e.key === 'Enter' && step < steps.length - 1) e.preventDefault() }}>
+        <div className="space-y-4">
           <div className="flex items-center justify-between mb-2">
             {steps.map((s, i) => (
               <div key={i} className="flex items-center gap-2">
@@ -319,7 +318,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
                   Siguiente
                 </button>
               ) : (
-                <button type="submit" disabled={saving} className="bg-primary-500 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:bg-neutral-300 dark:disabled:bg-gray-600">
+                <button type="button" disabled={saving} onClick={handleSubmit} className="bg-primary-500 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:bg-neutral-300 dark:disabled:bg-gray-600">
                   {saving ? 'Guardando...' : isEditing ? 'Guardar cambios' : 'Crear producto'}
                 </button>
               )}
@@ -328,7 +327,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
               </button>
             </div>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   )
