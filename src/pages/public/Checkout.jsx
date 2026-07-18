@@ -43,6 +43,7 @@ function Checkout() {
     cfdi_use: 'G03',
     zip: '',
     regime: '601',
+    fiscal_address: '',
   })
 
   const handleSubmit = async (e) => {
@@ -79,6 +80,7 @@ function Checkout() {
         payload.invoice_cfdi_use = invoice.cfdi_use
         payload.invoice_zip = invoice.zip
         payload.invoice_regime = invoice.regime
+        payload.invoice_fiscal_address = invoice.fiscal_address
       }
 
       const order = await ordersApi.create(payload)
@@ -248,6 +250,16 @@ function Checkout() {
                     <option value="625">Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas</option>
                     <option value="626">Régimen Simplificado de Confianza</option>
                   </select>
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Domicilio Fiscal</label>
+                  <textarea
+                    rows={2}
+                    value={invoice.fiscal_address}
+                    onChange={(e) => setInvoice({...invoice, fiscal_address: e.target.value})}
+                    placeholder="Calle, número, colonia, municipio, estado, CP"
+                    className="w-full px-3 py-2.5 border border-neutral-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+                  />
                 </div>
               </div>
             )}

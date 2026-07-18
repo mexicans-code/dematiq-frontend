@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { DollarSign, Package, Users, Clock, TrendingUp, ShoppingBag, RefreshCw } from 'lucide-react'
+import { DollarSign, Package, Users, Clock, TrendingUp, ShoppingBag, RefreshCw, BarChart3 } from 'lucide-react'
 import { productsApi, ordersApi, usersApi } from '../../services/api'
 
 const statusLabels = {
@@ -32,6 +32,7 @@ const statusBgColors = {
 function Dashboard() {
   const [stats, setStats] = useState(null)
   const [recentOrders, setRecentOrders] = useState([])
+  const [statusCounts, setStatusCounts] = useState({})
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -50,6 +51,16 @@ function Dashboard() {
         totalUsers: users.length,
         pendingOrders: pendingOrders.length,
       })
+
+      const counts = { shipped: 0, delivered: 0, pending: 0, cancelled: 0 }
+      allOrders.forEach((o) => {
+        if (o.status === 'shipped') counts.shipped++
+        else if (o.status === 'delivered') counts.delivered++
+        else if (o.status === 'pending' || o.status === 'processing' || o.status === 'confirmed') counts.pending++
+        else if (o.status === 'cancelled') counts.cancelled++
+      })
+      setStatusCounts(counts)
+
       setRecentOrders(allOrders.slice(0, 5))
     }).catch(console.error)
     .finally(() => setLoading(false))
@@ -107,11 +118,37 @@ function Dashboard() {
         })}
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 overflow-hidden">
-        <div className="px-6 py-4 border-b border-neutral-100 dark:border-gray-700 flex items-center justify-between">
-          <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide">Ordenes recientes</h2>
-          <ShoppingBag className="w-5 h-5 text-neutral-400 dark:text-gray-500" />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide">Estado de órdenes</h2>
+            <BarChart3 className="w-5 h-5 text-neutral-400 dark:text-gray-500" />
+          </div>
+          {['Enviado', 'Entregado', 'Pendiente', 'Cancelado'].map((label) => {
+            const key = { Enviado: 'shipped', Entregado: 'delivered', Pendiente: 'pending', Cancelado: 'cancelled' }[label]
+            const count = statusCounts[key] || 0
+            const total = Object.values(statusCounts).reduce((a, b) => a + b, 0) || 1
+            const pct = (count / total) * 100
+            const barColor = { shipped: 'bg-purple-500', delivered: 'bg-green-500', pending: 'bg-amber-500', cancelled: 'bg-red-400' }[key]
+            return (
+              <div key={key} className="mb-4 last:mb-0">
+                <div className="flex items-center justify-between text-sm mb-1.5">
+                  <span className="font-medium text-neutral-700 dark:text-gray-300">{label}</span>
+                  <span className="text-neutral-500 dark:text-gray-400">{count} ({pct.toFixed(0)}%)</span>
+                </div>
+                <div className="w-full h-2.5 bg-neutral-100 dark:bg-gray-700 rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+                </div>
+              </div>
+            )
+          })}
         </div>
+
+        <div className="bg-white dark:bg-gray-800 rounded-2xl border border-neutral-100 dark:border-gray-700 overflow-hidden">
+          <div className="px-6 py-4 border-b border-neutral-100 dark:border-gray-700 flex items-center justify-between">
+            <h2 className="font-heading text-lg font-bold text-black dark:text-white uppercase tracking-wide">Ordenes recientes</h2>
+            <ShoppingBag className="w-5 h-5 text-neutral-400 dark:text-gray-500" />
+          </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

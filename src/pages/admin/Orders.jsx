@@ -41,7 +41,7 @@ const nextStatuses = {
 
 const filterStatuses = ['Todas', 'pending', 'processing', 'confirmed', 'shipped', 'delivered', 'cancelled']
 
-function OrderDetail({ order, onClose, onStatusChange, onReverify }) {
+function OrderDetail({ order, onClose, onStatusChange, onReverify, onUpdateTracking }) {
   if (!order) return null
 
   return (
@@ -98,6 +98,7 @@ function OrderDetail({ order, onClose, onStatusChange, onReverify }) {
                 <p><span className="text-neutral-400 dark:text-gray-500">Uso CFDI:</span> {order.invoice_cfdi_use}</p>
                 <p><span className="text-neutral-400 dark:text-gray-500">CP Fiscal:</span> {order.invoice_zip}</p>
                 <p><span className="text-neutral-400 dark:text-gray-500">Régimen:</span> {order.invoice_regime}</p>
+                {order.invoice_fiscal_address && <p><span className="text-neutral-400 dark:text-gray-500">Domicilio Fiscal:</span> {order.invoice_fiscal_address}</p>}
               </div>
             </div>
           )}
@@ -145,6 +146,55 @@ function OrderDetail({ order, onClose, onStatusChange, onReverify }) {
                 </tr>
               </tfoot>
             </table>
+          </div>
+
+          <div className="border-t dark:border-gray-700 pt-4">
+            <h3 className="font-heading text-sm font-bold text-black dark:text-white uppercase tracking-wide mb-3">Envío</h3>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-neutral-400 dark:text-gray-500">Paquetería</label>
+                <input
+                  type="text"
+                  defaultValue={order.courier || ''}
+                  onChange={(e) => { order.courier = e.target.value }}
+                  className="w-full px-3 py-2 mt-0.5 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
+                  placeholder="Ej. FedEx, DHL, Estafeta..."
+                />
+              </div>
+              <div>
+                <label className="text-xs text-neutral-400 dark:text-gray-500">No. de Guía</label>
+                <input
+                  type="text"
+                  defaultValue={order.tracking_number || ''}
+                  onChange={(e) => { order.tracking_number = e.target.value }}
+                  className="w-full px-3 py-2 mt-0.5 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
+                  placeholder="Número de rastreo"
+                />
+              </div>
+              <div>
+                <label className="text-xs text-neutral-400 dark:text-gray-500">Fecha de envío</label>
+                <input
+                  type="date"
+                  defaultValue={order.shipped_at ? order.shipped_at.split('T')[0] : ''}
+                  onChange={(e) => { order.shipped_at = e.target.value ? new Date(e.target.value).toISOString() : null }}
+                  className="w-full px-3 py-2 mt-0.5 text-sm border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200"
+                />
+              </div>
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    onUpdateTracking(order.id, {
+                      courier: order.courier,
+                      tracking_number: order.tracking_number,
+                      shipped_at: order.shipped_at,
+                    })
+                  }}
+                  className="w-full px-4 py-2 rounded-lg text-sm font-semibold bg-primary-500 text-white hover:bg-primary-600 transition-colors"
+                >
+                  Guardar envío
+                </button>
+              </div>
+            </div>
           </div>
 
           {nextStatuses[order.status]?.length > 0 && (
@@ -227,6 +277,16 @@ function Orders() {
       load()
     } catch (err) {
       toast.error('Error al conectar con el servidor: ' + err.message)
+    }
+  }
+
+  const handleTrackingUpdate = async (id, data) => {
+    try {
+      await ordersApi.update(id, data)
+      toast.success('Información de envío guardada')
+      load()
+    } catch (err) {
+      toast.error(err.message)
     }
   }
 
@@ -327,6 +387,7 @@ function Orders() {
           onClose={() => setDetail(null)}
           onStatusChange={handleStatusChange}
           onReverify={handleReverify}
+          onUpdateTracking={handleTrackingUpdate}
         />
       )}
     </div>

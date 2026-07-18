@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../../contexts/CartContext'
 import { useQuote } from '../../contexts/QuoteContext'
 import { useAuth } from '../../contexts/AuthContext'
-import { Check, ShoppingCart, ArrowLeft, ClipboardList, Minus, Plus } from 'lucide-react'
+import { Check, ShoppingCart, ArrowLeft, ClipboardList, Minus, Plus, FileText } from 'lucide-react'
 import { productsApi } from '../../services/api'
 
 function ProductDetail() {
@@ -117,6 +117,18 @@ function ProductDetail() {
                 ))}
               </ul>
             </div>
+          )}
+
+          {product.tech_sheet_url && (
+            <a
+              href={product.tech_sheet_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 mb-6 text-sm font-semibold text-primary-500 border border-primary-500 rounded-lg hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-colors"
+            >
+              <FileText className="w-4 h-4" />
+              Descargar ficha técnica (PDF)
+            </a>
           )}
 
           <p className="text-sm text-neutral-400 dark:text-gray-500 mb-4">

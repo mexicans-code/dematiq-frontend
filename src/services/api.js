@@ -61,6 +61,7 @@ function mapProduct(p) {
     brand_id: p.brand_id || null,
     brand_logo: p.brands?.logo_url || null,
     brand_slug: p.brands?.slug || null,
+    tech_sheet_url: p.tech_sheet_url || '',
     created_at: p.created_at,
     updated_at: p.updated_at,
   };
@@ -87,6 +88,10 @@ function mapOrder(o) {
     invoice_cfdi_use: o.invoice_cfdi_use || 'G03',
     invoice_zip: o.invoice_zip || '',
     invoice_regime: o.invoice_regime || '',
+    invoice_fiscal_address: o.invoice_fiscal_address || '',
+    tracking_number: o.tracking_number || '',
+    courier: o.courier || '',
+    shipped_at: o.shipped_at || null,
     created_at: o.created_at,
     updated_at: o.updated_at,
     itemCount: (o.order_items || []).reduce((sum, i) => sum + i.quantity, 0),
@@ -231,6 +236,14 @@ export const ordersApi = {
     const res = await request(`/orders/${id}/status`, {
       method: 'PUT',
       body: JSON.stringify({ status }),
+    });
+    return mapOrder(res.data);
+  },
+
+  update: async (id, data) => {
+    const res = await request(`/orders/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
     });
     return mapOrder(res.data);
   },

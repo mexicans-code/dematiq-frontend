@@ -30,6 +30,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
     stock: product?.stock?.toString() || '0',
     description: product?.description || '',
     image_url: product?.image_url || '',
+    tech_sheet_url: product?.tech_sheet_url || '',
     specs: product?.specs ? JSON.stringify(product.specs, null, 2) : '[]',
     featuresList: Array.isArray(product?.specs) ? [...product.specs] : [],
     status: product?.status || 'active',
@@ -76,6 +77,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
         stock: parseInt(form.stock, 10),
         description: form.description,
         image_url: imageUrl || null,
+        tech_sheet_url: form.tech_sheet_url,
         specs,
         status: form.status,
         price_on_request: form.price_on_request,
@@ -147,6 +149,24 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
               <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Stock</label>
               <input type="number" name="stock" required min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
             </div>
+            <div className="col-span-2 grid grid-cols-2 gap-4 p-3 bg-neutral-50 dark:bg-gray-700 rounded-xl">
+              <div>
+                <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Precio MA 16 (con IVA)</label>
+                <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (parseFloat(form.price) || 0).toFixed(2)}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Subtotal (sin IVA)</label>
+                <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) / 1.16).toFixed(2)}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">IVA (16%)</label>
+                <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (((parseFloat(form.price) || 0) / 1.16) * 0.16).toFixed(2)}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Subtotal + IVA</label>
+                <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) / 1.16 + ((parseFloat(form.price) || 0) / 1.16) * 0.16).toFixed(2)}</p>
+              </div>
+            </div>
             <div>
               <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Estado</label>
               <select name="status" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200">
@@ -189,6 +209,33 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
             <div className="col-span-2">
               <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Descripción</label>
               <textarea name="description" rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white resize-none bg-transparent dark:text-gray-200" />
+            </div>
+            <div className="col-span-2">
+              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Ficha técnica (PDF)</label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="text"
+                  value={form.tech_sheet_url}
+                  onChange={(e) => setForm({ ...form, tech_sheet_url: e.target.value })}
+                  placeholder="URL del PDF o sube un archivo..."
+                  className="flex-1 px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 text-sm"
+                />
+                <label className="flex items-center gap-2 px-4 py-2.5 border border-dashed border-neutral-200 dark:border-gray-600 rounded-lg text-sm text-neutral-400 dark:text-gray-500 hover:text-neutral-600 dark:hover:text-gray-300 hover:border-neutral-300 cursor-pointer transition-colors">
+                  <UploadIcon className="w-4 h-4" />
+                  PDF
+                  <input type="file" accept=".pdf" className="hidden" onChange={async (e) => {
+                    const file = e.target.files?.[0]
+                    if (!file) return
+                    try {
+                      const url = await uploadImage(file)
+                      setForm({ ...form, tech_sheet_url: url })
+                      toast.success('PDF subido correctamente')
+                    } catch (err) {
+                      toast.error(err.message)
+                    }
+                  }} />
+                </label>
+              </div>
             </div>
             <div className="col-span-2">
               <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Características</label>
