@@ -114,7 +114,7 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" onKeyDown={(e) => { if (e.key === 'Enter' && step < steps.length - 1) e.preventDefault() }}>
           <div className="flex items-center justify-between mb-2">
             {steps.map((s, i) => (
               <div key={i} className="flex items-center gap-2">
