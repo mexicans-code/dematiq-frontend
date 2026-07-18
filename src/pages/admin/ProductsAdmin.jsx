@@ -36,11 +36,18 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
     status: product?.status || 'active',
     price_on_request: product?.price_on_request || false,
   })
+  const [step, setStep] = useState(0)
   const [pendingFile, setPendingFile] = useState(null)
   const [preview, setPreview] = useState(product?.image_url || '')
   const [previewOpen, setPreviewOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const fileInputRef = useRef(null)
+
+  const steps = [
+    { label: 'Información básica', icon: '1' },
+    { label: 'Descripción y multimedia', icon: '2' },
+    { label: 'Precio y stock', icon: '3' },
+  ]
 
   const handleFileSelect = (e) => {
     const file = e.target.files?.[0]
@@ -108,179 +115,218 @@ function ProductModal({ product, categories, brands, onClose, onSave }) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Nombre del producto</label>
-              <input type="text" name="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">SKU</label>
-              <input type="text" name="sku" required value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Categoría</label>
-              <select name="category_id" value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200">
-                <option value="">Sin categoría</option>
-                {flatCategories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
-                    {'\u00A0'.repeat(cat.depth * 4)}{cat.depth > 0 ? '— ' : ''}{cat.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Marca</label>
-              <select name="brand_id" value={form.brand_id} onChange={(e) => setForm({ ...form, brand_id: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200">
-                <option value="">Sin marca</option>
-                {brands.map((b) => (
-                  <option key={b.id} value={b.id}>{b.name}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="flex items-center gap-2 mb-2 cursor-pointer">
-                <input type="checkbox" checked={form.price_on_request} onChange={(e) => setForm({ ...form, price_on_request: e.target.checked, price: e.target.checked ? '' : form.price })} className="w-4 h-4 rounded border-neutral-300 dark:border-gray-600 text-primary-500 focus:ring-primary-500" />
-                <span className="text-sm font-medium text-neutral-700 dark:text-gray-300">Sin precio / Consultar precio</span>
-              </label>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Precio</label>
-              <input type="number" name="price" required={!form.price_on_request} step="0.01" min="0" value={form.price} disabled={form.price_on_request} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 disabled:bg-neutral-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Stock</label>
-              <input type="number" name="stock" required min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
-            </div>
-            <div className="col-span-2 grid grid-cols-2 gap-4 p-3 bg-neutral-50 dark:bg-gray-700 rounded-xl">
-              <div>
-                <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Precio MA 16 (con IVA)</label>
-                <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (parseFloat(form.price) || 0).toFixed(2)}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Subtotal (sin IVA)</label>
-                <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) / 1.16).toFixed(2)}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">IVA (16%)</label>
-                <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (((parseFloat(form.price) || 0) / 1.16) * 0.16).toFixed(2)}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Subtotal + IVA</label>
-                <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) / 1.16 + ((parseFloat(form.price) || 0) / 1.16) * 0.16).toFixed(2)}</p>
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Estado</label>
-              <select name="status" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200">
-                <option value="active">Activo</option>
-                <option value="inactive">Inactivo</option>
-              </select>
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Imagen</label>
-              <div className="flex items-center gap-3">
-                <label className="flex-1 flex items-center gap-2 px-4 py-2.5 border border-dashed border-neutral-200 dark:border-gray-600 rounded-lg text-sm text-neutral-400 dark:text-gray-500 hover:text-neutral-600 dark:hover:text-gray-300 hover:border-neutral-300 dark:hover:border-gray-500 cursor-pointer transition-colors">
-                  <UploadIcon className="w-4 h-4" />
-                  {preview ? 'Cambiar imagen' : 'Subir imagen'}
-                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
-                </label>
-                {pendingFile && <span className="text-xs text-neutral-400 dark:text-gray-500">(sin guardar)</span>}
-                {preview && (
-                  <button type="button" onClick={clearImage} className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors" aria-label="Eliminar imagen">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
-              </div>
-              {preview && (
-                <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-neutral-200 dark:border-gray-600 cursor-pointer" onClick={() => setPreviewOpen(true)}>
-                  <img src={preview} alt="" className="w-full h-full object-cover" />
+          <div className="flex items-center justify-between mb-2">
+            {steps.map((s, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-colors ${i === step ? 'bg-primary-500 text-white' : i < step ? 'bg-green-500 text-white' : 'bg-neutral-200 dark:bg-gray-600 text-neutral-500 dark:text-gray-400'}`}>
+                  {i < step ? '✓' : s.icon}
                 </div>
-              )}
-              {previewOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setPreviewOpen(false)}>
-                  <div className="fixed inset-0 bg-black/70" />
-                  <div className="relative max-w-2xl max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl">
-                    <img src={preview} alt="" className="w-full h-full object-contain" />
-                    <button type="button" onClick={() => setPreviewOpen(false)} className="absolute top-2 right-2 p-1.5 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors">
-                      <X className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Descripción</label>
-              <textarea name="description" rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white resize-none bg-transparent dark:text-gray-200" />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Ficha técnica (PDF)</label>
-              <div className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={form.tech_sheet_url}
-                  onChange={(e) => setForm({ ...form, tech_sheet_url: e.target.value })}
-                  placeholder="URL del PDF o sube un archivo..."
-                  className="flex-1 px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 text-sm"
-                />
-                <label className="flex items-center gap-2 px-4 py-2.5 border border-dashed border-neutral-200 dark:border-gray-600 rounded-lg text-sm text-neutral-400 dark:text-gray-500 hover:text-neutral-600 dark:hover:text-gray-300 hover:border-neutral-300 cursor-pointer transition-colors">
-                  <UploadIcon className="w-4 h-4" />
-                  PDF
-                  <input type="file" accept=".pdf" className="hidden" onChange={async (e) => {
-                    const file = e.target.files?.[0]
-                    if (!file) return
-                    try {
-                      const url = await uploadImage(file)
-                      setForm({ ...form, tech_sheet_url: url })
-                      toast.success('PDF subido correctamente')
-                    } catch (err) {
-                      toast.error(err.message)
-                    }
-                  }} />
-                </label>
+                <span className={`text-xs font-medium hidden sm:inline ${i === step ? 'text-black dark:text-white' : 'text-neutral-400 dark:text-gray-500'}`}>{s.label}</span>
+                {i < steps.length - 1 && <div className={`w-8 h-0.5 ${i < step ? 'bg-green-500' : 'bg-neutral-200 dark:bg-gray-600'}`} />}
               </div>
-            </div>
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Características</label>
-              <div className="space-y-2">
-                {form.featuresList.map((f, i) => (
-                  <div key={i} className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={f}
-                      onChange={(e) => {
-                        const list = [...form.featuresList]
-                        list[i] = e.target.value
-                        setForm({ ...form, featuresList: list })
-                      }}
-                      placeholder={`Característica ${i + 1}`}
-                      className="flex-1 px-3 py-2 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 text-sm"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setForm({ ...form, featuresList: form.featuresList.filter((_, j) => j !== i) })}
-                      className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => setForm({ ...form, featuresList: [...form.featuresList, ''] })}
-                  className="flex items-center gap-1 text-sm text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
-                >
-                  <ListPlus className="w-4 h-4" />
-                  Agregar característica
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
 
-          <div className="flex items-center gap-3 pt-2">
-            <button type="submit" disabled={saving} className="bg-primary-500 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:bg-neutral-300 dark:disabled:bg-gray-600">
-              {saving ? 'Guardando...' : isEditing ? 'Guardar cambios' : 'Crear producto'}
-            </button>
-            <button type="button" onClick={onClose} className="px-6 py-2.5 rounded-lg font-semibold text-neutral-600 dark:text-gray-300 border border-neutral-200 dark:border-gray-600 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors">
-              Cancelar
-            </button>
+          {step === 0 && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Nombre del producto</label>
+                <input type="text" name="name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">SKU</label>
+                <input type="text" name="sku" required value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Categoría</label>
+                <select name="category_id" value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200">
+                  <option value="">Sin categoría</option>
+                  {flatCategories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {'\u00A0'.repeat(cat.depth * 4)}{cat.depth > 0 ? '— ' : ''}{cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Marca</label>
+                <select name="brand_id" value={form.brand_id} onChange={(e) => setForm({ ...form, brand_id: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200">
+                  <option value="">Sin marca</option>
+                  {brands.map((b) => (
+                    <option key={b.id} value={b.id}>{b.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Estado</label>
+                <select name="status" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200">
+                  <option value="active">Activo</option>
+                  <option value="inactive">Inactivo</option>
+                </select>
+              </div>
+            </div>
+          )}
+
+          {step === 1 && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Descripción</label>
+                <textarea name="description" rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white resize-none bg-transparent dark:text-gray-200" />
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Imagen</label>
+                <div className="flex items-center gap-3">
+                  <label className="flex-1 flex items-center gap-2 px-4 py-2.5 border border-dashed border-neutral-200 dark:border-gray-600 rounded-lg text-sm text-neutral-400 dark:text-gray-500 hover:text-neutral-600 dark:hover:text-gray-300 hover:border-neutral-300 dark:hover:border-gray-500 cursor-pointer transition-colors">
+                    <UploadIcon className="w-4 h-4" />
+                    {preview ? 'Cambiar imagen' : 'Subir imagen'}
+                    <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+                  </label>
+                  {pendingFile && <span className="text-xs text-neutral-400 dark:text-gray-500">(sin guardar)</span>}
+                  {preview && (
+                    <button type="button" onClick={clearImage} className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors" aria-label="Eliminar imagen">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+                {preview && (
+                  <div className="mt-2 w-20 h-20 rounded-lg overflow-hidden border border-neutral-200 dark:border-gray-600 cursor-pointer" onClick={() => setPreviewOpen(true)}>
+                    <img src={preview} alt="" className="w-full h-full object-cover" />
+                  </div>
+                )}
+                {previewOpen && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setPreviewOpen(false)}>
+                    <div className="fixed inset-0 bg-black/70" />
+                    <div className="relative max-w-2xl max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl">
+                      <img src={preview} alt="" className="w-full h-full object-contain" />
+                      <button type="button" onClick={() => setPreviewOpen(false)} className="absolute top-2 right-2 p-1.5 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Ficha técnica (PDF)</label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    value={form.tech_sheet_url}
+                    onChange={(e) => setForm({ ...form, tech_sheet_url: e.target.value })}
+                    placeholder="URL del PDF o sube un archivo..."
+                    className="flex-1 px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 text-sm"
+                  />
+                  <label className="flex items-center gap-2 px-4 py-2.5 border border-dashed border-neutral-200 dark:border-gray-600 rounded-lg text-sm text-neutral-400 dark:text-gray-500 hover:text-neutral-600 dark:hover:text-gray-300 hover:border-neutral-300 cursor-pointer transition-colors">
+                    <UploadIcon className="w-4 h-4" />
+                    PDF
+                    <input type="file" accept=".pdf" className="hidden" onChange={async (e) => {
+                      const file = e.target.files?.[0]
+                      if (!file) return
+                      try {
+                        const url = await uploadImage(file)
+                        setForm({ ...form, tech_sheet_url: url })
+                        toast.success('PDF subido correctamente')
+                      } catch (err) {
+                        toast.error(err.message)
+                      }
+                    }} />
+                  </label>
+                </div>
+              </div>
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Características</label>
+                <div className="space-y-2">
+                  {form.featuresList.map((f, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        value={f}
+                        onChange={(e) => {
+                          const list = [...form.featuresList]
+                          list[i] = e.target.value
+                          setForm({ ...form, featuresList: list })
+                        }}
+                        placeholder={`Característica ${i + 1}`}
+                        className="flex-1 px-3 py-2 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, featuresList: form.featuresList.filter((_, j) => j !== i) })}
+                        className="p-2 text-neutral-300 dark:text-gray-600 hover:text-red-500 transition-colors"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, featuresList: [...form.featuresList, ''] })}
+                    className="flex items-center gap-1 text-sm text-neutral-500 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
+                  >
+                    <ListPlus className="w-4 h-4" />
+                    Agregar característica
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="flex items-center gap-2 mb-2 cursor-pointer">
+                  <input type="checkbox" checked={form.price_on_request} onChange={(e) => setForm({ ...form, price_on_request: e.target.checked, price: e.target.checked ? '' : form.price })} className="w-4 h-4 rounded border-neutral-300 dark:border-gray-600 text-primary-500 focus:ring-primary-500" />
+                  <span className="text-sm font-medium text-neutral-700 dark:text-gray-300">Sin precio / Consultar precio</span>
+                </label>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Precio</label>
+                <input type="number" name="price" required={!form.price_on_request} step="0.01" min="0" value={form.price} disabled={form.price_on_request} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200 disabled:bg-neutral-100 dark:disabled:bg-gray-700 disabled:cursor-not-allowed" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 dark:text-gray-300 mb-1">Stock</label>
+                <input type="number" name="stock" required min="0" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} className="w-full px-3 py-2.5 border border-neutral-200 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-black dark:focus:ring-white bg-transparent dark:text-gray-200" />
+              </div>
+              <div className="col-span-2 grid grid-cols-2 gap-4 p-3 bg-neutral-50 dark:bg-gray-700 rounded-xl">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Precio MA 16 (con IVA)</label>
+                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (parseFloat(form.price) || 0).toFixed(2)}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Subtotal (sin IVA)</label>
+                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) / 1.16).toFixed(2)}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">IVA (16%)</label>
+                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : (((parseFloat(form.price) || 0) / 1.16) * 0.16).toFixed(2)}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-500 dark:text-gray-400 mb-1">Subtotal + IVA</label>
+                  <p className="text-sm font-semibold text-black dark:text-white">${form.price_on_request ? '0.00' : ((parseFloat(form.price) || 0) / 1.16 + ((parseFloat(form.price) || 0) / 1.16) * 0.16).toFixed(2)}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between pt-2">
+            <div>
+              {step > 0 && (
+                <button type="button" onClick={() => setStep(step - 1)} className="px-5 py-2.5 rounded-lg font-semibold text-neutral-600 dark:text-gray-300 border border-neutral-200 dark:border-gray-600 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors">
+                  Anterior
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
+              {step < steps.length - 1 ? (
+                <button type="button" onClick={() => setStep(step + 1)} className="bg-black dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-lg font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 transition-colors">
+                  Siguiente
+                </button>
+              ) : (
+                <button type="submit" disabled={saving} className="bg-primary-500 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-primary-600 transition-colors disabled:bg-neutral-300 dark:disabled:bg-gray-600">
+                  {saving ? 'Guardando...' : isEditing ? 'Guardar cambios' : 'Crear producto'}
+                </button>
+              )}
+              <button type="button" onClick={onClose} className="px-5 py-2.5 rounded-lg font-semibold text-neutral-600 dark:text-gray-300 border border-neutral-200 dark:border-gray-600 hover:bg-neutral-50 dark:hover:bg-gray-700 transition-colors">
+                Cancelar
+              </button>
+            </div>
           </div>
         </form>
       </div>
